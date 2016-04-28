@@ -113,88 +113,6 @@ function WvWLogger(id,colors) { // {{{
     */
   }
 } // }}}
-function Map() { // {{{
-  this.descriptions = [ // {{{
-    {id: 0, index: 0, type: "Imaginary", score: 0, map: "None", en: "None" },
-    {id: 1, index: 0, type: "Keep", score: 25, map: "Center", en: "Overlook", de: "Aussichtspunkt", es: "Mirador", fr: "Belvédère"},
-    {id: 2, index: 1, type: "Keep", score: 25, map: "Center", en: "Valley", de: "Tal", es: "Valle", fr: "Vallée"},
-    {id: 3, index: 2, type: "Keep", score: 25, map: "Center", en: "Lowlands", de: "Tiefland", es: "Vega", fr: "Basses terres"},
-    {id: 4, index: 3, type: "Camp", score: 5, map: "Center", en: "Golanta Clearing", de: "Golanta-Lichtung", es: "Claro Golanta", fr: "Clairière de Golanta"},
-    {id: 5, index: 0, type: "Camp", score: 5, map: "Center", en: "Pangloss Rise", de: "Pangloss-Anhöhe", es: "Colina Pangloss", fr: "Montée de Pangloss"},
-    {id: 6, index: 5, type: "Camp", score: 5, map: "Center", en: "Speldan Clearcut", de: "Speldan Kahlschlag", es: "Claro Espeldia", fr: "Forêt rasée de Speldan"},
-    {id: 7, index: 2, type: "Camp", score: 5, map: "Center", en: "Danelon Passage", de: "Danelon-Passage", es: "Pasaje Danelon", fr: "Passage Danelon"},
-    {id: 8, index: 1, type: "Camp", score: 5, map: "Center", en: "Umberglade Woods", de: "Umberlichtung-Forst", es: "Bosques Clarosombra", fr: "Bois d'Ombreclair"},
-    {id: 9, index: 0, type: "Castle", score: 35, map: "Center", en: "Stonemist Castle", de: "Schloss Steinnebel", es: "Castillo Piedraniebla", fr: "Château Brumepierre"},
-    {id: 10, index: 4, type: "Camp", score: 5, map: "Center", en: "Rogue's Quarry", de: "Schurkenbruch", es: "Cantera del Pícaro", fr: "Carrière des voleurs"},
-    {id: 11, index: 8, type: "Tower", score: 10, map: "Center", en: "Aldon's Ledge", de: "Aldons Vorsprung", es: "Cornisa de Aldon", fr: "Corniche d'Aldon"},
-    {id: 12, index: 9, type: "Tower", score: 10, map: "Center", en: "Wildcreek Run'", de: "Wildbachstrecke", es: "Pista Arroyosalvaje", fr: "Piste du Ruisseau sauvage"},
-    {id: 13, index: 7, type: "Tower", score: 10, map: "Center", en: "Jerrifer's Slough", de: "Jerrifers Sumpfloch", es: "Cenagal de Jerrifer", fr: "Bourbier de Jerrifer"},
-    {id: 14, index: 6, type: "Tower", score: 10, map: "Center", en: "Klovan Gully", de: "Klovan-Senke", es: "Barranco Klovan", fr: "Petit ravin de Klovan"},
-    {id: 15, index: 4, type: "Tower", score: 10, map: "Center", en: "Langor Gulch", de: "Langor-Schlucht", es: "Barranco Langor", fr: "Ravin de Langor"},
-    {id: 16, index: 5, type: "Tower", score: 10, map: "Center", en: "Quentin Lake", de: "Quentinsee", es: "Lago Quentin", fr: "Lac Quentin"},
-    {id: 17, index: 11, type: "Tower", score: 10, map: "Center", en: "Mendon's Gap", de: "Mendons Spalt", es: "Zanja de Mendon", fr: "Faille de Mendon"},
-    {id: 18, index: 10, type: "Tower", score: 10, map: "Center", en: "Anzalias Pass", de: "Anzalias-Pass", es: "Paso Anzalias", fr: "Col d'Anzalias"},
-    {id: 19, index: 1, type: "Tower", score: 10, map: "Center", en: "Ogrewatch Cut", de: "Ogerwacht-Kanal", es: "Tajo de la Guardia del Ogro", fr: "Percée de Gardogre"},
-    {id: 20, index: 0, type: "Tower", score: 10, map: "Center", en: "Veloka Slope", de: "Veloka-Hang", es: "Pendiente Veloka", fr: "Flanc de Veloka"},
-    {id: 21, index: 2, type: "Tower", score: 10, map: "Center", en: "Durios Gulch", de: "Durios-Schlucht", es: "Barranco Durios", fr: "Ravin de Durios"},
-    {id: 22, index: 3, type: "Tower", score: 10, map: "Center", en: "Bravost Escarpment", de: "'Bravost-Abhang", es: "Escarpadura Bravost", fr: "Falaise de Bravost"},
-    {id: 23, index: 0, type: "Keep", score: 25, map: "BlueHome", en: "Garrison", de: "Festung", es: "Fuerte", fr: "Garnison"},
-    {id: 24, index: 3, type: "Camp", score: 5, map: "BlueHome", en: "Champion's demense", de: "Landgut des Champions", es: "Dominio del Campeón", fr: "Fief du champion"},
-    {id: 25, index: 2, type: "Tower", score: 10, map: "BlueHome", en: "Redbriar", de: "Rotdornstrauch", es: "Zarzarroja", fr: "Bruyerouge"},
-    {id: 26, index: 1, type: "Tower", score: 10, map: "BlueHome", en: "Greenlake", de: "Grünsee", es: "Lagoverde", fr: "Lac Vert"},
-    {id: 27, index: 2, type: "Keep", score: 25, map: "BlueHome", en: "Ascension Bay", de: "Bucht des Aufstiegs", es: "Bahía de la Ascensión", fr: "Baie de l'Ascension"},
-    {id: 28, index: 0, type: "Tower", score: 10, map: "BlueHome", en: "Dawn's Eyrie", de: "Horst der Morgendämmerung", es: "Aguilera del Alba", fr: "Promontoire de l'aube"},
-    {id: 29, index: 0, type: "Camp", score: 5, map: "BlueHome", en: "The Spiritholme", de: "Der Geisterholm", es: "La Isleta Espiritual", fr: "L'antre des esprits"},
-    {id: 30, index: 3, type: "Tower", score: 10, map: "BlueHome", en: "Woodhaven", de: "Wald-Freistatt", es: "Refugio Forestal", fr: "Gentesylve"},
-    {id: 31, index: 1, type: "Keep", score: 25, map: "BlueHome", en: "Askalion Hills", de: "Askalion-Hügel", es: "Colinas Askalion", fr: "Collines d'Askalion"},
-    {id: 32, index: 1, type: "Keep", score: 25, map: "RedHome", en: "Etheron Hills", de: "Etheron-Hügel", es: "Colinas Etheron", fr: "Collines d'Etheron"},
-    {id: 33, index: 2, type: "Keep", score: 25, map: "RedHome", en: "Dreaming Bay", de: "Traumbucht", es: "Bahía Onírica", fr: "Baie des rêves"},
-    {id: 34, index: 3, type: "Camp", score: 5, map: "RedHome", en: "Victors's Lodge", de: "Sieger-Hütte", es: "Albergue del Vencedor", fr: "Pavillon du vainqueur"},
-    {id: 35, index: 2, type: "Tower", score: 10, map: "RedHome", en: "Greenbriar", de: "Grünstrauch", es: "Zarzaverde", fr: "Vertebranche"},
-    {id: 36, index: 1, type: "Tower", score: 10, map: "RedHome", en: "Bluelake", de: "Blausee", es: "Lagoazul", fr: "Lac bleu"},
-    {id: 37, index: 0, type: "Keep", score: 25, map: "RedHome", en: "Garrison", de: "Festung", es: "Fuerte", fr: "Garnison"},
-    {id: 38, index: 3, type: "Tower", score: 10, map: "RedHome", en: "Longview", de: "Weitsicht", es: "Vistaluenga", fr: "Longuevue"},
-    {id: 39, index: 0, type: "Camp", score: 5, map: "RedHome", en: "The Godsword", de: "Das Gottschwert", es: "La Hoja Divina", fr: "L'Epée divine"},
-    {id: 40, index: 0, type: "Tower", score: 10, map: "RedHome", en: "Cliffside", de: "Felswand", es: "Despeñadero", fr: "Flanc de Falaise"},
-    {id: 41, index: 1, type: "Keep", score: 25, map: "GreenHome", en: "Shadaran Hills", de: "Shadaran-Hügel", es: "Colinas Shadaran", fr: "Collines de Shadaran"},
-    {id: 42, index: 1, type: "Tower", score: 10, map: "GreenHome", en: "Redlake", de: "Rotsee", es: "Lagorrojo", fr: "Rougelac"},
-    {id: 43, index: 3, type: "Camp", score: 5, map: "GreenHome", en: "Hero's Lodge", de: "Hütte des Helden", es: "Albergue del Héroe", fr: "Pavillon du Héros"},
-    {id: 44, index: 2, type: "Keep", score: 25, map: "GreenHome", en: "Dreadfall Bay", de: "Schreckensfall-Bucht", es: "Bahía Salto Aciago", fr: "Baie du Noir déclin"},
-    {id: 45, index: 2, type: "Tower", score: 10, map: "GreenHome", en: "Bluebriar", de: "Blaudornstrauch", es: "Zarzazul", fr: "Bruyazur"},
-    {id: 46, index: 0, type: "Keep", score: 25, map: "GreenHome", en: "Garrison", de: "Festung", es: "Fuerte", fr: "Garnison"},
-    {id: 47, index: 3, type: "Tower", score: 10, map: "GreenHome", en: "Sunnyhill", de: "Sonnenlichthügel", es: "Colina Soleada", fr: "Colline ensoleillée"},
-    {id: 48, index: 5, type: "Camp", score: 5, map: "GreenHome", en: "Faithleap", de: "Glaubenssprung", es: "Salto de Fe", fr: "Ferveur"},
-    {id: 49, index: 4,  type: "Camp", score: 5, map: "GreenHome", en: "Bluevale Refuge", de: "Blautal-Zuflucht", es: "Refugio Valleazul", fr: "Refuge de bleubal"},
-    {id: 50, index: 2, type: "Camp", score: 5, map: "RedHome", en: "Bluewater Lowlands", de: "Blauwasser-Tiefland", es: "Tierras Bajas de Aguazul", fr: "Basses terres d'Eau-Azur"},
-    {id: 51, index: 1, type: "Camp", score: 5, map: "RedHome", en: "Astralholme", de: "Astralholm", es: "Isleta Astral", fr: "Astralholme"},
-    {id: 52, index: 5, type: "Camp", score: 5, map: "RedHome", en: "Arah's Hope", de: "Arahs Hoffnung", es: "Esperanza de Arah", fr: "Espoir d'Arah"},
-    {id: 53, index: 4, type: "Camp", score: 5, map: "RedHome", en: "Greenvale Refuge'", de: "Grüntal-Zuflucht", es: "Refugio de Valleverde", fr: "Refuge de Valvert"},
-    {id: 54, index: 1, type: "Camp", score: 5, map: "GreenHome", en: "Foghaven", de: "Nebel-Freistatt", es: "Refugio Neblinoso", fr: "Havre gris"},
-    {id: 55, index: 2, type: "Camp", score: 5, map: "GreenHome", en: "Redwater Lowlands", de: "Rotwasser-Tiefland", es: "Tierras Bajas de Aguarroja", fr: "Basses terres de Rubicon"},
-    {id: 56, index: 0, type: "Camp", score: 5, map: "GreenHome", en: "The Titanpaw", de: "Die Titanenpranke", es: "La Garra del Titán", fr: "Bras du titan"},
-    {id: 57, index: 0, type: "Tower", score: 10, map: "GreenHome", en: "Cragtop", de: "Felsenspitze", es: "Cumbrepeñasco", fr: "Sommet de l'escarpement"},
-    {id: 58, index: 5, type: "Camp", score: 5, map: "BlueHome", en: "Godslore", de: "Götterkunde", es: "Sabiduría de los Dioses", fr: "Divination"},
-    {id: 59, index: 4, type: "Camp", score: 5, map: "BlueHome", en: "Redvale Refuge", de: "Rottal-Zuflucht", es: "Refugio Vallerojo", fr: "Refuge de Valrouge"},
-    {id: 60, index: 1, type: "Camp", score: 5, map: "BlueHome", en: "Stargrove", de: "Sternenhain", es: "Arboleda de las Estrellas", fr: "Bosquet stellaire"},
-    {id: 61, index: 2, type: "Camp", score: 5, map: "BlueHome", en: "Greenwater Lowlands", de: "Grünwasser-Tiefland", es: "Tierras Bajas de Aguaverde", fr: "Basses terres d'Eau-Verdoyante"},
-    {id: 62, index: 2, type: "Ruin", score: 0, map: "RedHome", en: "Temple of Lost Prayers", de: "", es: "", fr: ""},
-    {id: 63, index: 3, type: "Ruin", score: 0, map: "RedHome", en: "Battle's Hollow", de: "", es: "", fr: ""},
-    {id: 64, index: 4, type: "Ruin", score: 0, map: "RedHome", en: "Bauer's Estate", de: "", es: "", fr: ""},
-    {id: 65, index: 0, type: "Ruin", score: 0, map: "RedHome", en: "Orchard Overlook", de: "", es: "", fr: ""},
-    {id: 66, index: 1, type: "Ruin", score: 0, map: "RedHome", en: "Carver's Ascent", de: "", es: "", fr: ""},
-    {id: 67, index: 1, type: "Ruin", score: 0, map: "BlueHome", en: "Carver's Ascent", de: "", es: "", fr: ""},
-    {id: 68, index: 0, type: "Ruin", score: 0, map: "BlueHome", en: "Orchard Overlook", de: "", es: "", fr: ""},
-    {id: 69, index: 4, type: "Ruin", score: 0, map: "BlueHome", en: "Bauer's Estate", de: "", es: "", fr: ""},
-    {id: 70, index: 3, type: "Ruin", score: 0, map: "BlueHome", en: "Battle's Hollow", de: "", es: "", fr: ""},
-    {id: 71, index: 2, type: "Ruin", score: 0, map: "BlueHome", en: "Temple of Lost Prayers", de: "", es: "", fr: ""},
-    {id: 72, index: 1, type: "Ruin", score: 0, map: "GreenHome", en: "Carver's Ascent", de: "", es: "", fr: ""},
-    {id: 73, index: 0, type: "Ruin", score: 0, map: "GreenHome", en: "Orchard Overlook", de: "", es: "", fr: ""},
-    {id: 74, index: 4, type: "Ruin", score: 0, map: "GreenHome", en: "Bauer's Estate", de: "", es: "", fr: ""},
-    {id: 75, index: 3, type: "Ruin", score: 0, map: "GreenHome", en: "Battle's Hollow", de: "", es: "", fr: ""},
-    {id: 76, index: 2, type: "Ruin", score: 0, map: "GreenHome", en: "Temple of Lost Prayers", de: "", es: "", fr: ""},
-  ]; // }}}
-  this.description = function(id) { return this.descriptions[id]; };
-} // }}}
 function CenterMap(id,status,grid) { // {{{
   var canvas      = new MyCanvas(id,grid);
   var ctx         = canvas.context;
@@ -218,7 +136,7 @@ function CenterMap(id,status,grid) { // {{{
 
   for (var i=0; i<mapstatus['objectives'].length; i++) {
     objective   = mapstatus['objectives'][i];
-    description = this.description(objective.id);
+    description = MapDetails.description(objective.id);
     if (description.type == "Camp") {
       camps[description.index]  = new Camp(canvas,counts['camps'],description);
       objectives[i]             = camps[description.index];
@@ -302,8 +220,7 @@ function HomeMap(id,status,grid) { // {{{
 
   for (var i=0; i<mapstatus['objectives'].length; i++) {
     objective   = mapstatus['objectives'][i];
-    description = this.description(objective.id);
-    console.log(objective);
+    description = MapDetails.description(objective.id);
     if (description.type == "Ruin") {
       ruins[description.index]  = new Ruin(canvas,5,description);
       objectives[i]             = ruins[description.index];
@@ -438,8 +355,8 @@ function MyCanvas(id,grid) { // {{{
   } // }}}
 } // }}}
 
-CenterMap.prototype = new Map();
-HomeMap.prototype   = new Map();
+//CenterMap.prototype = new Map();
+//HomeMap.prototype   = new Map();
 
 function Castle(myc,count,desc) { // {{{
   var size          = 27;
@@ -967,7 +884,9 @@ function WvWWatcher(stat,pause) { // {{{
             world_id = worlds[i].id;
           }
         }
-        findMatch(world_id);
+        checkStatus();
+        statusInterval = window.setInterval(checkStatus, 30000);
+        //findMatch(world_id);
       }
     }
 
@@ -979,11 +898,11 @@ function WvWWatcher(stat,pause) { // {{{
       console.log("World ID not defined");
       return;
     }
-    var url = "https://api.guildwars2.com/v1/wvw/matches.json";
+    var url = "https://api.guildwars2.com/v2/wvw/matches?world="+id;
 
     xmlhttp.onreadystatechange = function() {
       if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-        var response = JSON.parse(xmlhttp.responseText);
+        var match = JSON.parse(xmlhttp.responseText);
         var matches = response['wvw_matches'];
         for (var i=0; i<matches.length; i++) {
           if ((matches[i].red_world_id == id) || (matches[i].blue_world_id == id) || (matches[i].green_world_id == id)) {
@@ -1000,9 +919,9 @@ function WvWWatcher(stat,pause) { // {{{
     xmlhttp.send();
   }
   function checkStatus() { // {{{
-    var url       = "https://api.guildwars2.com/v1/wvw/match_details.json?match_id=" + match_id;
+    var url       = "https://api.guildwars2.com/v2/wvw/matches?world=" + world_id;
 
-    if (Date.now() > match_end_time) {
+    if (match_end_time != null && Date.now() > match_end_time) {
       stats.innerHTML = "Match completed, status updates halted.  Reload to monitor current match";
       window.clearInterval(statusInterval);
       return;
@@ -1011,7 +930,7 @@ function WvWWatcher(stat,pause) { // {{{
     xmlhttp.onreadystatechange = function() {
       if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
         var status = JSON.parse(xmlhttp.responseText);
-        lookupGuilds(status);
+        //lookupGuilds(status);
         if (status['maps']) {
           var now = new Date();
           stats.innerHTML = "Last updated: " + now.toISOString();
