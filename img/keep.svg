@@ -1,0 +1,17 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="2cm" height="2cm" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" version="1.1">
+  <desc>Tower Test Render</desc>
+  <circle cx="200" cy="200" r="150" fill="red" stroke="black" stroke-width="25" />
+  <!--rect x="125" y="120" width="150" height="160" fill="blue" stroke="black" / -->
+  <path d=" M 130 280 L 145 240 L 145 185 L 130 160
+            L 130 120
+            L 156 120 L 156 150 L 168 150 L 168 120
+            L 194 120 L 194 150 L 206 150 L 206 120
+            L 232 120 L 232 150 L 244 150 L 244 120
+            L 270 120
+            L 270 160 L 255 185 L 255 240 L 270 280
+            L 226 280 L 226 250 A 26 30 0 0,0 174 250 L 174 280 
+            z" fill="black" stroke="black" />
+</svg>
+
