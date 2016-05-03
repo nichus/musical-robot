@@ -1,9 +1,39 @@
-class MapDetails {
-  constructor() {
-  }
-
-  static description(id) {
-    return [
+function Objectives() {
+  var indexes = { 1: 0,
+		  2: 1,
+		  3: 2,
+		  4: 3,
+		  5: 0,
+		  6: 5,
+		  7: 2,
+		  8: 1,
+		  10: 4,
+		  11: 8,
+		  12: 9,
+		  13: 7,
+		  14: 6,
+		  15: 4,
+		  16: 5,
+		  17: 11,
+		  18: 10,
+		  19: 1,
+		  20: 0,
+		  21: 2,
+		  22: 3,
+		  99: 0,
+		  100: 2,
+		  101: 4,
+		  102: 3,
+		  104: 0,
+		  105: 1,
+		  106: 1,
+		  109: 1,
+		  110: 2,
+		  114: 0,
+		  115: 5,
+		  116: 3
+		};
+  var objectives = [
         {"id":"1099-99","name":"Hamm's Lab","sector_id":1314,"type":"Camp","map_type":"RedHome","map_id":1099,"coord":[10742.6,9482.42,-2955.22],"label_coord":[10864,9559.49]},
 	{"id":"1102-99","name":"Lesh's Lab","sector_id":1291,"type":"Camp","map_type":"GreenHome","map_id":1102,"coord":[7158.64,12042.4,-2955.22],"label_coord":[7279.95,12119.5]},
 	{"id":"1143-99","name":"Zakk's Lab","sector_id":1358,"type":"Camp","map_type":"BlueHome","map_id":1143,"coord":[14326.6,11402.4,-2955.22],"label_coord":[14448,11479.5]},
@@ -158,6 +188,20 @@ class MapDetails {
 	{"id":"38-8","name":"Umberglade Woods","sector_id":835,"type":"Camp","map_type":"Center","map_id":38,"coord":[11562.3,14470.3,-302.91],"label_coord":[11680.9,14353.6]},
 	{"id":"38-10","name":"Rogue's Quarry","sector_id":851,"type":"Camp","map_type":"Center","map_id":38,"coord":[9570.97,14423.2,-700],"label_coord":[9612.54,14462.8]},
 	{"id":"38-18","name":"Anzalias Pass","sector_id":893,"type":"Tower","map_type":"Center","map_id":38,"coord":[10188.8,14082.3,-1657.95],"label_coord":[10246.9,13998.3]}
-    ].find(function(elem) { return elem.id === id });
-  }
+  ];
+
+  objectives.forEach(function(elem) {
+    var id = elem.id.split('-');
+    elem.index = indexes[id[1]];
+  });
+
+  this.id = function(id) {
+    return objectives.find(function(elem) { return elem.id == id });
+  };
+  this.map_id = function(id) {
+    return objectives.filter(function(elem) { return elem.map_id == id });
+  };
+  this.type = function(map_id,type) {
+    return this.map_id(map_id).filter(function(elem) { return elem.type == type });
+  };
 }
