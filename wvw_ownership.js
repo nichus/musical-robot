@@ -11,7 +11,7 @@ function WvWLogger(id,colors) { // {{{
   function formatTime(now) {
     return "" + now.getUTCHours() + ":" + now.getUTCMinutes() + ":" + now.getUTCSeconds();
   }
-  function formatEntry(data) {
+  function formatEntry(data) {//{{{
     var item            = document.createElement('div');
     var icon            = document.createElement('div');
     var objective       = document.createElement('div');
@@ -54,7 +54,10 @@ function WvWLogger(id,colors) { // {{{
 
     guild.setAttribute('class','log_guild');
     if (data.curr.guild) {
-      guild.appendChild(document.createTextNode('['+data.curr.guild.tag+']'));
+      var abbr = document.createElement('abbr');
+      abbr.setAttribute('title',data.curr.guild.guild_name);
+      abbr.appendChild(document.createTextNode('['+data.curr.guild.tag+']'));
+      guild.appendChild(abbr);
     } else if (data.prev.guild) {
       guild.setAttribute('class','log_guild released');
       guild.appendChild(document.createTextNode('['+data.prev.guild.tag+']'));
@@ -80,7 +83,7 @@ function WvWLogger(id,colors) { // {{{
     item.appendChild(message);
 
     return item;
-  }
+  }//}}}
   this.log              = function(data) {
     entry = formatEntry(data);
     if (entry == null) {
@@ -109,6 +112,11 @@ function WvWLogger(id,colors) { // {{{
       ul.insertBefore(entry,ul.firstChild);
     }
     */
+  }
+  this.reset		= function() {
+    while (box.hasChildNodes()) {
+      box.removeChild(box.lastChild);
+    }
   }
 } // }}}
 function MyCanvas(id,grid) { // {{{
@@ -210,11 +218,10 @@ function MyCanvas(id,grid) { // {{{
 function Castle(myc,count,desc) { // {{{
   var size          = 27;
   var canvas        = myc;
-  var description   = desc;
-  var status        = null;
+  var status        = desc;
 
   var captured_at   = 0;
-  this.id           = desc.id;
+  this.id           = function() { return status.id }
 
   function draw(stroke,fill) { // {{{
     var ctx         = canvas.context;
@@ -264,10 +271,10 @@ function Castle(myc,count,desc) { // {{{
     }
     return 0;
   }
-  this.report = function() { console.log(description.id+": "+description.type+"/"+description.name); }
+  this.report = function() { console.log(status.id+": "+status.type+"/"+status.name); }
   this.update = function(st,logger) { // {{{
-    logger.log({'desc': desc, 'prev': status, 'curr': st});
-    this.captured_at = (Date.parse(st.last_flipped) / 1000);
+    logger.log({'desc': st, 'prev': status, 'curr': st});
+    this.captured_at = st.last_flipped / 1000;
     status = st;
 
     if (status.owner == "Red") {
@@ -286,26 +293,26 @@ function Keep(myc,count,desc) { // {{{
   var canvas        = myc;
   var width         = (count==2) ? Math.PI/4.0 : Math.PI/6.0;
   var sites         = count * 1.0;
-  var description   = desc;
-  var status        = null;
+  var status        = desc;
   var updated	    = 0;
 
   var captured_at   = 0;
-  this.id           = desc.id;
 
-  if (description.map_type != "Center") {
+  this.id	    = function() { return status.id; }
+
+  if (status.map_type != "Center") {
     sites = sites - 1;
   }
 
   function rotation() {
-    if (description.map_type == "Center") {
+    if (status.map_type == "Center") {
       return -Math.PI/2.0;
     }
     return 0;
   }
 
   function angle() {
-    return (description.index*(2*Math.PI)/sites) + rotation();
+    return (status.index*(2*Math.PI)/sites) + rotation();
   }
   function angle1() {
     return angle() - width/2.0;
@@ -370,13 +377,13 @@ function Keep(myc,count,desc) { // {{{
     }
     return 0;
   }//}}}
-  this.report = function() { console.log(description.id+": "+description.type+"/"+description.name); }
+  this.report = function() { console.log(status.id+": "+status.type+"/"+status.name); }
   this.update = function(st,logger) { // {{{
-    logger.log({'desc': desc, 'prev': status, 'curr': st});
-    this.captured_at = (Date.parse(st.last_flipped) / 1000);
-    if (st.claimed_by != null && st.claimed_at != null && Date.parse(st.claimed_at) > updated) {
+    logger.log({'desc': st, 'prev': status, 'curr': st});
+    this.captured_at = st.last_flipped / 1000;
+    if (st.claimed_by != null && st.claimed_at != null && st.claimed_at > updated) {
       if (st.guild) {
-        logger.log({'guild': st.guild, 'message':desc.type.toLowerCase() + ' ' + desc.name});
+        logger.log({'guild': st.guild, 'message':st.type.toLowerCase() + ' ' + st.name});
       }
     }
     status = st;
@@ -398,23 +405,23 @@ function Tower(myc,count,desc) { // {{{
   var canvas        = myc;
   var width         = Math.PI/10.0;
   var sites         = count * 1.0;
-  var description   = desc;
-  var index         = description.index;
-  var status        = null;
+  var status        = desc;
   var updated	    = 0;
 
   var captured_at   = 0;
   this.id           = desc.id;
 
+  this.id     = function() { return status.id; };
+
   function rotation() {
-    if (description.map_type == "Center") {
+    if (status.map_type == "Center") {
       return -Math.PI/6.0;
     }
     return 0;
   }
 
   function angle() {
-    return (description.index*(2*Math.PI)/sites) - Math.PI/4.0 + rotation();
+    return (status.index*(2*Math.PI)/sites) - Math.PI/4.0 + rotation();
   }
   function angle1() {
     return angle() - width/2.0;
@@ -479,13 +486,13 @@ function Tower(myc,count,desc) { // {{{
     }
     return 0;
   }
-  this.report = function() { console.log(description.id+": "+description.type+"/"+description.name); }
+  this.report = function() { console.log(status.id+": "+status.type+"/"+status.name); }
   this.update = function(st,logger) { // {{{
-    logger.log({'desc': desc, 'prev': status, 'curr': st});
-    captured_at = (Date.parse(st.last_flipped) / 1000);
-    if (st.claimed_by != null && st.claimed_at != null && Date.parse(st.claimed_at) > updated) {
+    logger.log({'desc': st, 'prev': status, 'curr': st});
+    captured_at = (st.last_flipped / 1000);
+    if (st.claimed_by != null && st.claimed_at != null && st.claimed_at > updated) {
       if (st.guild) {
-        logger.log({'guild': st.guild, 'message':desc.type.toLowerCase() + ' ' + desc.name});
+        logger.log({'guild': st.guild, 'message':st.type.toLowerCase() + ' ' + st.name});
       }
     }
     status = st;
@@ -506,24 +513,23 @@ function Camp(myc,count,desc) { // {{{
   var size          = 90;
   var canvas        = myc;
   var width         = Math.PI/18.0;
-  var description   = desc;
   var sites	    = count * 1.0;
 
-  var status        = null;
+  var status        = desc;
   var captured_at   = 0;
   var updated	    = 0;
-  this.id           = desc.id;
 
-  function report() { console.log(description.id+": "+description.type+"/"+description.name+"["+description.index+"]"); }
-  this.report = function() { report(); }
+  function report() { console.log(status.id+": "+status.type+"("+count+")/"+status.name+"["+status.index+"] "+angle()); }
+  this.report = function() { report(); };
+  this.id     = function() { return status.id; };
   function rotation() {//{{{
-    if (description.map_type == "Center") {
+    if (status.type == "Center") {
       return Math.PI/6.0;
     }
     return 0;
   }//}}}
   function angle() {//{{{
-    return (description.index*(2*Math.PI)/sites) + rotation()-Math.PI/2.0;
+    return (status.index*(2*Math.PI)/sites) + rotation()-Math.PI/2.0;
   }//}}}
   function angle1() {//{{{
     return angle()-(width/2.0);
@@ -547,7 +553,7 @@ function Camp(myc,count,desc) { // {{{
 
     ctx.strokeStyle = canvas.colors.yellow();
     ctx.fillStyle   = canvas.colors.yellow();
-    switch(true) {
+    switch(true) {//{{{
       case ri > 180:
         ctx.beginPath();
         ctx.moveTo(canvas.cx+Math.cos(angle1())*(size-24), canvas.cy+Math.sin(angle1())*(size-24));
@@ -577,7 +583,7 @@ function Camp(myc,count,desc) { // {{{
 	ctx.lineTo(canvas.cx+Math.cos(angle1())*(size-2), canvas.cy+Math.sin(angle1())*(size-2));
 	ctx.fill();
 	ctx.stroke();
-    }
+    }//}}}
   } // }}}
   function righteous_indignation() {//{{{
     var now       = Date.now()/1000;
@@ -589,11 +595,12 @@ function Camp(myc,count,desc) { // {{{
     return 0;
   }//}}}
   this.update = function(st,logger) { // {{{
-    logger.log({'desc': description, 'prev': status, 'curr': st});
-    captured_at = (Date.parse(st.last_flipped) / 1000);
-    if (st.claimed_by != null && st.claimed_at != null && Date.parse(st.claimed_at) > updated) {
+    // console.log(st);
+    logger.log({'desc': st, 'prev': status, 'curr': st});
+    captured_at = st.last_flipped / 1000;
+    if (st.claimed_by != null && st.claimed_at != null && st.claimed_at > updated) {
       if (st.guild) {
-        logger.log({'guild': st.guild, 'message':desc.type.toLowerCase() + ' ' + desc.name});
+        logger.log({'guild': st.guild, 'message':st.type.toLowerCase() + ' ' + st.name});
       }
     }
     status = st;
@@ -610,28 +617,37 @@ function Camp(myc,count,desc) { // {{{
     updated = Date.now();
   } // }}}
 } // }}}
-function Ruin(myc,count,desc) { // {{{
+function Ruins(myc,count,desc) { // {{{
   var size          = 35;
-  var stepsize      = Math.PI*2/count;
+  var stepsize      = Math.PI*2.0/count;
   var width         = stepsize*.90;
   var spacer        = (stepsize-width)/2.0;
-  var angle1        = (stepsize)*desc.index-(Math.PI*2)/4.0+spacer;
-  var angle2        = (stepsize)*(desc.index+1)-(Math.PI*2)/4.0-spacer;
+  var angle	    = Math.PI*2/4.0 - ((Math.PI*2.0)/(count*10.0));
   var canvas        = myc;
-  var description   = desc;
-  var status        = null;
+  var status        = desc;
 
-  this.id           = desc.id;
   this.captured_at  = null;
+  this.id	    = function() { return status.id; };
+  this.report	    = function() { report(); };
+
+  function report() { console.log(status.id+": "+status.type+"("+count+")/"+status.name+"["+status.index+"] "+angle1()+"#"+angle2()); }
+
+  function angle1() {//{{{
+    return (stepsize*desc.index) - angle + spacer;
+  }//}}}
+  function angle2() {//{{{
+    return (stepsize*desc.index+1) - angle - spacer;
+  }//}}}
 
   function draw(stroke,fill) { // {{{
-    ctx = canvas.context;
+    var ctx = canvas.context;
     ctx.strokeStyle = stroke;
     ctx.fillStyle   = fill;
+
     ctx.beginPath();
     ctx.moveTo(canvas.cx,canvas.cy);
-    ctx.lineTo(canvas.cx+Math.cos(angle1)*size, canvas.cy+Math.sin(angle1)*size);
-    ctx.arc(canvas.cx,canvas.cy,size,angle1,angle2,false);
+    ctx.lineTo(canvas.cx+Math.cos(angle1())*size, canvas.cy+Math.sin(angle1())*size);
+    ctx.arc(canvas.cx,canvas.cy,size,angle1(),angle2(),false);
     ctx.lineTo(canvas.cx, canvas.cy);
     ctx.fill();
     ctx.stroke();
@@ -700,7 +716,6 @@ class WvWMap {//{{{
   constructor(which) {
     this.name	    = which;
     this.objectives = null;
-    this.details    = null;
     this.status	    = null;
     this.info	    = null;
     this.graph	    = which.replace("Center","CenterHome");
@@ -711,30 +726,30 @@ class WvWMap {//{{{
   updateStatus(newStatus,newMap=false,info) {//{{{
     if (newMap) {
       console.log(this.name+ " new Map detected");
-      var o = new Objectives();
-      this.details = o.map_id(newStatus.id);
+      this.logger.reset();
       this.objectives = new Map([['Camp', []],['Tower', []],['Keep', []],['Castle', []],['Ruins', []]]);
       this.info = info;
-      o.map_id(newStatus.id).forEach(function(e,i,l) {
+      //console.log(newStatus);
+      newStatus['objectives'].forEach(function(e,i,l) {
 	if (e.type === "Camp") {
 	    this.objectives.get('Camp').push(
-	      new Camp(this.canvas,o.type(newStatus.id,'Camp').length,o.id(e.id))
+	      new Camp(this.canvas,newStatus['features']['Camp'].length,e)
 	    );
 	} else if (e.type === "Tower") {
 	    this.objectives.get('Tower').push(
-	      new Tower(this.canvas,o.type(newStatus.id,'Tower').length,o.id(e.id))
+	      new Tower(this.canvas,newStatus['features']['Tower'].length,e)
 	    );
-	} else if (e.type === "Keep" && ! e.id.endsWith('-113')) {
+	} else if (e.type === "Keep" && ! (e.id.endsWith('-113') || e.id.endsWith('-37'))) {
 	    this.objectives.get('Keep').push(
-	      new Keep(this.canvas,o.type(newStatus.id,'Keep').length,o.id(e.id))
+	      new Keep(this.canvas,newStatus['features']['Keep'].length,e)
 	    );
-	} else if (e.type === "Castle" || (e.type === "Keep" && e.id.endsWith('-113'))) {
+	} else if (e.type === "Castle" || (e.type === "Keep" && (e.id.endsWith('-113') || e.id.endsWith('-37')))) {
 	    this.objectives.get('Castle').push(
-	      new Castle(this.canvas,o.type(newStatus.id,'Castle').length,o.id(e.id))
+	      new Castle(this.canvas,newStatus['features']['Castle'].length,e)
 	    );
 	} else if (e.type === "Ruins") {
 	    this.objectives.get('Ruins').push(
-	      new Ruins(this.canvas,o.type(newStatus.id,'Ruins').length,o.id(e.id))
+	      new Ruins(this.canvas,newStatus['features']['Ruins'].length,e)
 	    );
 	}
       },this);
@@ -750,10 +765,9 @@ class WvWMap {//{{{
   }
   draw() {//{{{
     this.canvas.drawBackground(this.name);
-    //['Camp','Tower','Keep','Castle','Ruins'].forEach(function(type) {
-    ['Camp','Tower','Keep','Castle'].forEach(function(type) {
+    ['Camp','Tower','Keep','Ruins','Castle'].forEach(function(type) {
       this.objectives.get(type).forEach(function(objective) {
-	var tgt = this.status.objectives.find(function(obj) { return obj.id == objective.id });
+	var tgt = this.status.objectives.find(function(obj) { return obj.id == objective.id() });
 	objective.update(tgt,this.logger);
       },this);
     },this);
@@ -770,6 +784,7 @@ class WorldStatus {//{{{
     this.scores		  = new Map([['red',0],['blue',0],['green',0]]);
     this.maps		  = new Map();
     this.team		  = null;
+    this.start_time	  = Date.now();
     this.end_time	  = 0;
     this.mapInfo	  = null;
 
@@ -836,29 +851,29 @@ class WorldStatus {//{{{
     },this);
   }//}}}
   updateWorld(newStatus) {//{{{
-    this.lookupGuilds(newStatus);
+    //this.lookupGuilds(newStatus);
     var now = new Date();
     var newMap = false;
     this.statdiv.html("Last updated: " + now.toISOString());
-    if (this.match_id != newStatus.id) {
+    if (this.start_time >= this.end_time) {
       this.match_id = newStatus.id;
       newMap = true;
     }
-    this.end_time = Date.parse(newStatus.end_time);
+    this.end_time = newStatus.end_time;
     this.status = newStatus;
     newStatus.maps.forEach(function(map,index,rawMaps) {
       var info = this.mapInfo.find(function(elem) { return elem.id ===  map.id });
       this.maps[map.type].updateStatus(map,newMap,info);
     },this);
     this.scores = status.scores;
-    this.last_update = new Date();
+    this.last_update = now;
   }//}}}
 }//}}}
 
 var ws	    = new WorldStatus('stats');
 var guilds  = new WvWGuilds();
 
-function sanitizeObjective(objective) {
+function sanitizeObjective(objective,o) {//{{{
   ['id','owner','type','claimed_at','claimed_by','last_flipped'].forEach(function(key) {
     switch (key) {
       case 'id':
@@ -880,11 +895,25 @@ function sanitizeObjective(objective) {
 	break;
     }
   });
+
+  details = o.id(objective['id']);
+  ['coord','index','label_coord','name','sector_id'].forEach(function(key) {
+    switch (key) {
+      case 'coord':
+      case 'index':
+      case 'label_coord':
+      case 'name':
+      case 'sector_id':
+	objective[key] = details[key];
+	break;
+    }
+  });
   return objective;
-}
-function sanitizeMap(map) {
-  var newMap = new Map();
-  var teams	= ['red','green','blue'];
+}//}}}
+function sanitizeMap(map) {//{{{
+  var newMap  = new Map();
+  var o	      = new Objectives();
+  var teams   = ['red','green','blue'];
   ['id','bonuses','deaths','kills','objectives','scores','type'].forEach(function(key) {
     switch(key) {
       case 'id':
@@ -900,13 +929,22 @@ function sanitizeMap(map) {
 	break;
       case 'objectives':
 	newMap[key] = new Array();
-	map[key].forEach(function(objective) { newMap[key].push(sanitizeObjective(objective)) });
+	map[key].forEach(function(objective) { newMap[key].push(sanitizeObjective(objective,o)) });
 	break;
     }
   });
+  newMap['features'] = new Map();
+  newMap['features']['Ruins']	= o.type(newMap['id'],'Ruins');
+  newMap['features']['Camp']	= o.type(newMap['id'],'Camp');
+  newMap['features']['Tower']	= o.type(newMap['id'],'Tower');
+  newMap['features']['Keep']	= o.type(newMap['id'],'Keep');
+  newMap['features']['Castle']  = o.type(newMap['id'],'Castle');
   return newMap;
-}
-function sanitizeData(data) {
+}//}}}
+function mapWorld(id) {//{{{
+  return ws.worlds.find(function(elem) { return elem.id === id })
+}//}}}
+function sanitizeData(data) {//{{{
   var sanitized = new Map();
   var teams	= ['red','green','blue'];
   ['id','start_time','end_time','scores','worlds','all_worlds','kills','deaths','maps'].forEach(function(key) {
@@ -918,9 +956,19 @@ function sanitizeData(data) {
       case 'end_time':
 	sanitized[key] = Date.parse(data[key]);
 	break;
-      case 'scores':
-      case 'worlds':
       case 'all_worlds':
+	sanitized[key] = new Map();
+	teams.forEach(function(color) {
+	  sanitized[key].set(color, data[key][color].map(function(elem) {
+	    return mapWorld(elem);
+	  }))
+	});
+	break;
+      case 'worlds':
+//	sanitized[key] = new Map();
+//	teams.forEach(function(color) { sanitized[key].set(color, mapWorld(data[key][color])); });
+//	break;
+      case 'scores':
       case 'kills':
       case 'deaths':
 	sanitized[key] = new Map();
@@ -937,13 +985,14 @@ function sanitizeData(data) {
     }
   });
   return sanitized;
-}
+}//}}}
 
 function updateStatus() {
   if (ws.running) {
     $.get(ws.status_url,function(data) {
-      //console.log(sanitizeData(data));
-      ws.updateWorld(data);
+      var sanitized = sanitizeData(data);
+      // console.log(sanitized);
+      ws.updateWorld(sanitized);
     });
   } else if (ws.finished) {
     ws.matchCompleted();
