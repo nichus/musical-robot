@@ -1,4 +1,4 @@
-function WvWLogger(id,colors) { // {{{
+function WvWLogger(id,colors) {
   var notificationLimit = 50;
   var box               = document.getElementById(id);
   var iconmap           = {
@@ -11,7 +11,7 @@ function WvWLogger(id,colors) { // {{{
   function formatTime(now) {
     return "" + now.getUTCHours() + ":" + now.getUTCMinutes() + ":" + now.getUTCSeconds();
   }
-  function formatEntry(data) {//{{{
+  function formatEntry(data) {
     var item            = document.createElement('div');
     var icon            = document.createElement('div');
     var objective       = document.createElement('div');
@@ -83,7 +83,7 @@ function WvWLogger(id,colors) { // {{{
     item.appendChild(message);
 
     return item;
-  }//}}}
+  }
   this.log              = function(data) {
     entry = formatEntry(data);
     if (entry == null) {
@@ -118,8 +118,8 @@ function WvWLogger(id,colors) { // {{{
       box.removeChild(box.lastChild);
     }
   }
-} // }}}
-function MyCanvas(id,grid) { // {{{
+}
+function MyCanvas(id,grid) {
   this.canvas         = document.getElementById(       id);
   this.canvaswidth    = this.canvas.getAttribute( 'width');
   this.canvasheight   = this.canvas.getAttribute('height');
@@ -190,12 +190,12 @@ function MyCanvas(id,grid) { // {{{
       this.context.stroke();
     }
   };
-  function Colors() { // {{{
+  function Colors() {
     var red     = "#df0101"; var transred   = "rgba( 223,   1,   1, 0.5 )";
     var green   = "#088a08"; var transgreen = "rgba(   8, 138,   8, 0.5 )";
     var blue    = "#2e64fe"; var transblue  = "rgba(  46, 100, 254, 0.5 )";
     var white   = "#fafafa"; var transwhite = "rgba( 250, 250, 250, 0.7 )";
-    var black   = "#333333"; var transblack = "rgba(  51,  51,  51, 0.7 )";
+    var black   = "#333333"; var transblack = "rgba(  30,  30,  30, .9 )";
     var eb      = "#cccccc";
     var yellow  = "#eeee05";
 
@@ -212,10 +212,10 @@ function MyCanvas(id,grid) { // {{{
     this.transblue    = function() { return  transblue; };
     this.transwhite   = function() { return transwhite; };
     this.transblack   = function() { return transblack; };
-  } // }}}
-} // }}}
+  }
+}
 
-function Castle(myc,count,desc) { // {{{
+function Castle(myc,count,desc) {
   var size          = 27;
   var canvas        = myc;
   var status        = desc;
@@ -223,7 +223,7 @@ function Castle(myc,count,desc) { // {{{
   var captured_at   = 0;
   this.id           = function() { return status.id }
 
-  function draw(stroke,fill) { // {{{
+  function draw(stroke,fill) {
     var ctx         = canvas.context;
     var ri          = righteous_indignation();
     ctx.strokeStyle = stroke;
@@ -261,7 +261,7 @@ function Castle(myc,count,desc) { // {{{
 	ctx.stroke();
 	ctx.lineWidth=1;
     }
-  } // }}}
+  }
   function righteous_indignation() {
     var now       = Date.now()/1000;
     var duration  = 300;
@@ -272,7 +272,7 @@ function Castle(myc,count,desc) { // {{{
     return 0;
   }
   this.report = function() { console.log(status.id+": "+status.type+"/"+status.name); }
-  this.update = function(st,logger) { // {{{
+  this.update = function(st,logger) {
     logger.log({'desc': st, 'prev': status, 'curr': st});
     this.captured_at = st.last_flipped / 1000;
     status = st;
@@ -286,9 +286,9 @@ function Castle(myc,count,desc) { // {{{
     } else {
       draw(myc.colors.transblack(),myc.colors.white());
     }
-  } // }}}
-} // }}}
-function Keep(myc,count,desc) { // {{{
+  }
+}
+function Keep(myc,count,desc) {
   var size          = 55;
   var canvas        = myc;
   var width         = (count==2) ? Math.PI/4.0 : Math.PI/6.0;
@@ -320,7 +320,7 @@ function Keep(myc,count,desc) { // {{{
   function angle2() {
     return angle() + width/2.0;
   }
-  function draw(stroke,fill) { // {{{
+  function draw(stroke,fill) {
     var ctx         = canvas.context;
     var ri          = righteous_indignation();
     ctx.strokeStyle = stroke;
@@ -367,8 +367,8 @@ function Keep(myc,count,desc) { // {{{
 	ctx.fill();
 	ctx.stroke();
     }
-  } // }}}
-  function righteous_indignation() {//{{{
+  }
+  function righteous_indignation() {
     var now       = Date.now()/1000;
     var duration  = 300;
 
@@ -376,9 +376,9 @@ function Keep(myc,count,desc) { // {{{
       return captured_at+duration - now;
     }
     return 0;
-  }//}}}
+  }
   this.report = function() { console.log(status.id+": "+status.type+"/"+status.name); }
-  this.update = function(st,logger) { // {{{
+  this.update = function(st,logger) {
     logger.log({'desc': st, 'prev': status, 'curr': st});
     this.captured_at = st.last_flipped / 1000;
     if (st.claimed_by != null && st.claimed_at != null && st.claimed_at > updated) {
@@ -398,9 +398,9 @@ function Keep(myc,count,desc) { // {{{
       draw(myc.colors.transblack(),myc.colors.white());
     }
     updated = Date.now();
-  } // }}}
-} // }}}
-function Tower(myc,count,desc) { // {{{
+  }
+}
+function Tower(myc,count,desc) {
   var size          = 65;
   var canvas        = myc;
   var width         = Math.PI/10.0;
@@ -429,7 +429,7 @@ function Tower(myc,count,desc) { // {{{
   function angle2() {
     return angle() + width/2.0;
   }
-  function draw(stroke,fill) { // {{{
+  function draw(stroke,fill) {
     var ctx         = canvas.context;
     var ri          = righteous_indignation();
     ctx.strokeStyle = stroke;
@@ -476,7 +476,7 @@ function Tower(myc,count,desc) { // {{{
 	ctx.fill();
 	ctx.stroke();
     }
-  } // }}}
+  }
   function righteous_indignation() {
     var now       = Date.now()/1000;
     var duration  = 300;
@@ -487,7 +487,7 @@ function Tower(myc,count,desc) { // {{{
     return 0;
   }
   this.report = function() { console.log(status.id+": "+status.type+"/"+status.name); }
-  this.update = function(st,logger) { // {{{
+  this.update = function(st,logger) {
     logger.log({'desc': st, 'prev': status, 'curr': st});
     captured_at = (st.last_flipped / 1000);
     if (st.claimed_by != null && st.claimed_at != null && st.claimed_at > updated) {
@@ -507,9 +507,9 @@ function Tower(myc,count,desc) { // {{{
       draw(myc.colors.transblack(),myc.colors.white());
     }
     updated = Date.now();
-  }; // }}}
-} // }}}
-function Camp(myc,count,desc) { // {{{
+  };
+}
+function Camp(myc,count,desc) {
   var size          = 90;
   var canvas        = myc;
   var width         = Math.PI/18.0;
@@ -522,22 +522,22 @@ function Camp(myc,count,desc) { // {{{
   function report() { console.log(status.id+": "+status.type+"("+count+")/"+status.name+"["+status.index+"] "+angle()); }
   this.report = function() { report(); };
   this.id     = function() { return status.id; };
-  function rotation() {//{{{
+  function rotation() {
     if (status.type == "Center") {
       return Math.PI/6.0;
     }
     return 0;
-  }//}}}
-  function angle() {//{{{
+  }
+  function angle() {
     return (status.index*(2*Math.PI)/sites) + rotation()-Math.PI/2.0;
-  }//}}}
-  function angle1() {//{{{
+  }
+  function angle1() {
     return angle()-(width/2.0);
-  }//}}}
-  function angle2() {//{{{
+  }
+  function angle2() {
     return  angle()+(width/2.0);
-  }//}}}
-  function draw(stroke,fill) { // {{{
+  }
+  function draw(stroke,fill) {
     var ctx         = canvas.context;
     var ri          = righteous_indignation();
     ctx.strokeStyle = stroke;
@@ -553,7 +553,7 @@ function Camp(myc,count,desc) { // {{{
 
     ctx.strokeStyle = canvas.colors.yellow();
     ctx.fillStyle   = canvas.colors.yellow();
-    switch(true) {//{{{
+    switch(true) {
       case ri > 180:
         ctx.beginPath();
         ctx.moveTo(canvas.cx+Math.cos(angle1())*(size-24), canvas.cy+Math.sin(angle1())*(size-24));
@@ -583,9 +583,9 @@ function Camp(myc,count,desc) { // {{{
 	ctx.lineTo(canvas.cx+Math.cos(angle1())*(size-2), canvas.cy+Math.sin(angle1())*(size-2));
 	ctx.fill();
 	ctx.stroke();
-    }//}}}
-  } // }}}
-  function righteous_indignation() {//{{{
+    }
+  }
+  function righteous_indignation() {
     var now       = Date.now()/1000;
     var duration  = 300;
 
@@ -593,8 +593,8 @@ function Camp(myc,count,desc) { // {{{
       return captured_at+duration - now;
     }
     return 0;
-  }//}}}
-  this.update = function(st,logger) { // {{{
+  }
+  this.update = function(st,logger) {
     // console.log(st);
     logger.log({'desc': st, 'prev': status, 'curr': st});
     captured_at = st.last_flipped / 1000;
@@ -615,10 +615,10 @@ function Camp(myc,count,desc) { // {{{
       draw(myc.colors.transblack(),myc.colors.white());
     }
     updated = Date.now();
-  } // }}}
-} // }}}
-function Ruins(myc,count,desc) { // {{{
-  var size          = 35;
+  }
+}
+function Ruins(myc,count,desc) {
+  var size          = 33;
   var stepsize      = Math.PI*2.0/count;
   var width         = stepsize*.90;
   var spacer        = (stepsize-width)/2.0;
@@ -632,14 +632,14 @@ function Ruins(myc,count,desc) { // {{{
 
   function report() { console.log(status.id+": "+status.type+"("+count+")/"+status.name+"["+status.index+"] "+angle1()+"#"+angle2()); }
 
-  function angle1() {//{{{
+  function angle1() {
     return (stepsize*desc.index) - angle + spacer;
-  }//}}}
-  function angle2() {//{{{
+  }
+  function angle2() {
     return (stepsize*desc.index+1) - angle - spacer;
-  }//}}}
+  }
 
-  function draw(stroke,fill) { // {{{
+  function draw(stroke,fill) {
     var ctx = canvas.context;
     ctx.strokeStyle = stroke;
     ctx.fillStyle   = fill;
@@ -651,25 +651,25 @@ function Ruins(myc,count,desc) { // {{{
     ctx.lineTo(canvas.cx, canvas.cy);
     ctx.fill();
     ctx.stroke();
-  } // }}}
-  this.update = function(st) { // {{{
+  }
+  this.update = function(st) {
     if (status && (status.owner != st.owner)) {
       this.captured_at = Date.now();
     }
     status = st;
 
     if (status.owner == "Red") {
-      draw(myc.colors.transblack(),myc.colors.red());
+      draw(myc.colors.black(),myc.colors.red());
     } else if (status.owner == "Green") {
-      draw(myc.colors.transblack(),myc.colors.green());
+      draw(myc.colors.black(),myc.colors.green());
     } else if (status.owner == "Blue") {
-      draw(myc.colors.transblack(),myc.colors.blue());
+      draw(myc.colors.black(),myc.colors.blue());
     } else {
-      draw(myc.colors.transblack(),myc.colors.white());
+      draw(myc.colors.black(),myc.colors.white());
     }
-  } // }}}
-} // }}}
-function WvWGuilds() {//{{{
+  }
+}
+function WvWGuilds() {
   var url         = 'https://api.guildwars2.com/v1/guild_details.json?guild_id=';
   var xmlhttp     = new XMLHttpRequest();
   var registrar  = {};
@@ -711,24 +711,23 @@ function WvWGuilds() {//{{{
       fetch(guid,method);
     }
   };
-}//}}}
-class WvWMap {//{{{
+}
+class WvWMap {
   constructor(which) {
     this.name	    = which;
     this.objectives = null;
     this.status	    = null;
     this.info	    = null;
     this.graph	    = which.replace("Center","CenterHome");
-    this.canvas	    = new MyCanvas(this.graph,true);
+    this.canvas	    = new MyCanvas(this.graph,false);
     this.logger	    = new WvWLogger(this.graph.replace('Home','Log'),this.canvas.colors);
     this.infoURL    = 'https://api.guildwars2.com/v2/maps/';
   }
-  updateStatus(newStatus,newMap=false,info) {//{{{
+  updateStatus(newStatus,newMap=false,info) {
     if (newMap) {
-      console.log(this.name+ " new Map detected");
+      // console.log(this.name+ " new Map detected");
       this.logger.reset();
       this.objectives = new Map([['Camp', []],['Tower', []],['Keep', []],['Castle', []],['Ruins', []]]);
-      this.info = info;
       //console.log(newStatus);
       newStatus['objectives'].forEach(function(e,i,l) {
 	if (e.type === "Camp") {
@@ -756,14 +755,8 @@ class WvWMap {//{{{
     }
     this.status = newStatus;
     this.draw();
-  }//}}}
-  set information(data) {
-    this.info = data;
   }
-  get information() {
-    return this.info;
-  }
-  draw() {//{{{
+  draw() {
     this.canvas.drawBackground(this.name);
     ['Camp','Tower','Keep','Ruins','Castle'].forEach(function(type) {
       this.objectives.get(type).forEach(function(objective) {
@@ -771,9 +764,9 @@ class WvWMap {//{{{
 	objective.update(tgt,this.logger);
       },this);
     },this);
-  }//}}}
-}//}}}
-class WorldStatus {//{{{
+  }
+}
+class WorldStatus {
   constructor(statusDiv) {
     this.statdiv	  = $("#"+statusDiv);
     this.world_id	  = null;
@@ -793,87 +786,94 @@ class WorldStatus {//{{{
     },this);
   }
 
-  get endTime() {//{{{
+  get endTime() {
     return this.end_time;
-  }//}}}
-  get finished() {//{{{
+  }
+  get finished() {
     return Date.now() > this.endTime;
-  }//}}}
-  get worldId() {//{{{
+  }
+  get worldId() {
     if (this.running) {
       return this.world_id;
     }
     return null;
-  }//}}}
-  get running() {//{{{
+  }
+  get running() {
     return this.last_update == 0 || ((this.match_id != null) && !this.finished);
-  }//}}}
-  get lastUpdate() {//{{{
+  }
+  get lastUpdate() {
     return this.last_update;
-  }//}}}
-  get status_url() {//{{{
+  }
+  get status_url() {
     if (this.world_id != null) {
       return "https://api.guildwars2.com/v2/wvw/matches?world=" + this.world_id;
     }
     return null;
-  }//}}}
-  set information(info) {//{{{
-    if (info) {
-      this.mapInfo = info;
-    }
-  }//}}}
-  set worlds(info) {//{{{
+  }
+  set worlds(info) {
     if (info) {
       this.team = info;
     }
-  }//}}}
-  get worlds() {//{{{
+  }
+  get worlds() {
     return this.team;
-  }//}}}
+  }
 
-  interval(id) {//{{{
+  interval(id) {
     this.interval_id = id;
-  }//}}}
-  worldId(id) {//{{{
+  }
+  worldId(id) {
     this.world_id = id;
-  }//}}}
-  matchCompleted() {//{{{
+  }
+  matchCompleted() {
     this.statdiv.html("Match completed, status updates halted.  Reload to monitor current match");
     clearInterval(this.interval_id);
     this.interval_id = null;
-  }//}}}
-  lookupGuilds(newStatus) {//{{{
+  }
+  lookupGuilds(newStatus) {
     newStatus.maps.forEach(function(element,i,l) {
       element.objectives.forEach(function(objective,j,m) {
 	if (objective.claimed_by != null) {
 	}
       },this);
     },this);
-  }//}}}
-  updateWorld(newStatus) {//{{{
+  }
+  updateWorld(newStatus) {
     //this.lookupGuilds(newStatus);
     var now = new Date();
     var newMap = false;
-    this.statdiv.html("Last updated: " + now.toISOString());
-    if (this.start_time >= this.end_time) {
+    this.statdiv.html("Last updated: " + moment(now).format('YYYY/MM/DD HH:mm:ss Z'));
+    if (newStatus.start_time >= this.end_time) {
       this.match_id = newStatus.id;
       newMap = true;
+
+      ["red","green","blue"].forEach(function(color) {
+	displayTeam(color,newStatus.teams.get(color),newStatus.scores.get(color),newStatus.kills.get(color),newStatus.deaths.get(color));
+      });
     }
     this.end_time = newStatus.end_time;
-    this.status = newStatus;
+    this.status	  = newStatus;
     newStatus.maps.forEach(function(map,index,rawMaps) {
-      var info = this.mapInfo.find(function(elem) { return elem.id ===  map.id });
-      this.maps[map.type].updateStatus(map,newMap,info);
+      this.maps[map.type].updateStatus(map,newMap);
     },this);
     this.scores = status.scores;
     this.last_update = now;
-  }//}}}
-}//}}}
+  }
+}
 
-var ws	    = new WorldStatus('stats');
+var ws	    = new WorldStatus('MatchStatus');
 var guilds  = new WvWGuilds();
 
-function sanitizeObjective(objective,o) {//{{{
+function displayTeam(color,team,score,kills,deaths) {
+  var content = "<div class='captain'>"+team[0].name+"</div>";
+  content += "<div class='members'> w/ "+team.slice(1).map(function(e){ return e.name; }).join(' &amp; ')+"</div>";
+  content += "<div class='stats'>";
+  content += "<div class='score'> s: "+score.toLocaleString()+" </div>";
+  content += "<div class='kills'> k: "+kills.toLocaleString()+" </div>";
+  content += "<div class='deaths'> d: "+deaths.toLocaleString()+" </div>";
+  $("#"+color+".team").html(content);
+}
+function sanitizeObjective(objective,o) {
   ['id','owner','type','claimed_at','claimed_by','last_flipped'].forEach(function(key) {
     switch (key) {
       case 'id':
@@ -909,8 +909,8 @@ function sanitizeObjective(objective,o) {//{{{
     }
   });
   return objective;
-}//}}}
-function sanitizeMap(map) {//{{{
+}
+function sanitizeMap(map) {
   var newMap  = new Map();
   var o	      = new Objectives();
   var teams   = ['red','green','blue'];
@@ -940,12 +940,21 @@ function sanitizeMap(map) {//{{{
   newMap['features']['Keep']	= o.type(newMap['id'],'Keep');
   newMap['features']['Castle']  = o.type(newMap['id'],'Castle');
   return newMap;
-}//}}}
-function mapWorld(id) {//{{{
+}
+function mapWorld(id) {
   return ws.worlds.find(function(elem) { return elem.id === id })
-}//}}}
-function sanitizeData(data) {//{{{
-  var sanitized = new Map();
+}
+function sanitizeTeam(color, primaryId, all_worlds) {
+  var team	  = new Array();
+
+  team.push(mapWorld(primaryId));
+  var otherIds  = all_worlds.filter(function(elem) { return elem != primaryId; });
+  otherIds.forEach(function(elem) { team.push(mapWorld(elem)); });
+
+  return team;
+}
+function sanitizeData(data) {
+  var sanitized = {};
   var teams	= ['red','green','blue'];
   ['id','start_time','end_time','scores','worlds','all_worlds','kills','deaths','maps'].forEach(function(key) {
     switch (key) {
@@ -957,41 +966,56 @@ function sanitizeData(data) {//{{{
 	sanitized[key] = Date.parse(data[key]);
 	break;
       case 'all_worlds':
-	sanitized[key] = new Map();
-	teams.forEach(function(color) {
-	  sanitized[key].set(color, data[key][color].map(function(elem) {
-	    return mapWorld(elem);
-	  }))
-	});
-	break;
       case 'worlds':
 //	sanitized[key] = new Map();
-//	teams.forEach(function(color) { sanitized[key].set(color, mapWorld(data[key][color])); });
+//	teams.forEach(function(color) {
+//	  sanitized[key].set(color, data[key][color].map(function(elem) {
+//	    return mapWorld(elem);
+//	  }))
+//	});
 //	break;
+//	sanitized[key] = new Map();
+//	teams.forEach(function(color) { sanitized[key].set(color, mapWorld(data[key][color])); });
+	break;
       case 'scores':
       case 'kills':
       case 'deaths':
 	sanitized[key] = new Map();
 	teams.forEach(function(color) { sanitized[key].set(color, data[key][color]); });
+//	var current = new Map();
+//	teams.forEach(function(color) { current.set(color, data[key][color]); });
+//	headers.set(key,current);
 	break;
       case 'maps':
 	sanitized[key] = new Array();
 	data[key].forEach(function(map,i) {
 	  sanitized[key][i] = sanitizeMap(map);
 	});
+//	var current = new Array();
+//	data[key].forEach(function(map,i) { current.push(sanitizeMap(map)); });
+//	sanitized.set(key,current);
 	break;
       default:
 	console.log('Unexpected match key: \''+key+'\'');
     }
   });
+  var worlds = new Map();
+  teams.forEach(function(color) {
+    worlds.set(color,sanitizeTeam(color,data['worlds'][color],data['all_worlds'][color]));
+  });
+  //console.log(worlds);
+  sanitized['teams'] = worlds;
+  //headers.set('worlds',worlds);
+  //sanitized.set('headers',headers);
+
   return sanitized;
-}//}}}
+}
 
 function updateStatus() {
   if (ws.running) {
     $.get(ws.status_url,function(data) {
       var sanitized = sanitizeData(data);
-      // console.log(sanitized);
+      //console.log(sanitized);
       ws.updateWorld(sanitized);
     });
   } else if (ws.finished) {

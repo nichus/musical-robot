@@ -2,7 +2,7 @@
   font: 10px/14px Verdana,Sans-Serif;
 }
 #logContainer > div {
-  height: 200px;
+  height: 194px;
   overflow-y: auto;
 }
 #logContainer .log_item {

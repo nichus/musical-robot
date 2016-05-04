@@ -1,37 +1,81 @@
 <html>
   <head>
-    <title>Canvas Experiments</title>
+    <title>GW2 WvW Map Tracker [Crystal Desert]</title>
     <link href="css/log.css" rel="stylesheet" />
+    <link href="css/opentip.css" rel="stylesheet" />
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300|Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <style>
+      body {
+	font-family: "Open Sans Condensed",sans-serif;
+	font-size: 14pt;
+      }
+      #teams {
+	height: 35px;
+      }
+      .captain {
+      }
+      .members {
+	font-size: 11px;
+      }
+      #teams .stats div {
+	float: left;
+	width: 33%;
+      }
+      .score, .kills, .deaths {
+	font-size: 10px;
+      }
+      .team {
+	color: white;
+	width: 120px;
+	height: 50px;
+	position: absolute;
+	top: 5px;
+	padding: 3px; 
+      }
+      #red.team { right: 268px; background: #df0101; }
+      #green.team { right: 138px; background: #088a08; }
+      #blue.team { right: 8px; background: #2e64fe; }
+      #MatchStatus { font-size: 10pt; }
+      #ri {
+	position:absolute;
+	left: 8px;
+	top: 816px;
+      }
+      div.style-standard {
+	font-size: 16pt;
+      }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script type="text/javascript" src="js/opentip-jquery.min.js"></script>
     <script type="text/javascript" src="moment.min.js"></script>
   </head>
   <body>
     <div>
       <select name="world" id="world"></select> <button name="button" id="button">Go</button>
     </div>
+    <div id="teams"><div id="red" class="team"></div><div id="green" class="team"></div><div id="blue" class="team"></div></div>
     <div style="float: left; max-width: 200px;">
-      <canvas id="CenterHome" width="190" height="200" style="border: 1px solid gainsboro">
+      <canvas id="CenterHome" width="190" height="194" style="outline: 1px solid gainsboro">
         OMG not supported!
       </canvas>
-      <canvas id="RedHome" width="190" height="200" style="border: 1px solid red">
+      <canvas id="RedHome" width="190" height="194" style="outline: 1px solid #df0101">
         OMG not supported!
       </canvas>
-      <canvas id="GreenHome" width="190" height="200" style="border: 1px solid green">
+      <canvas id="GreenHome" width="190" height="194" style="outline: 1px solid #088a08">
         OMG not supported!
       </canvas>
-      <canvas id="BlueHome" width="190" height="200" style="border: 1px solid blue">
+      <canvas id="BlueHome" width="190" height="194" style="outline: 1px solid #2e64fe">
         OMG not supported!
       </canvas>
     </div>
     <div id="logContainer" style="margin-left: 200px;">
-      <div id="CenterLog" style="border:1px solid gainsboro;"></div>
-      <div id="RedLog"    style="border:1px solid red;"></div>
-      <div id="GreenLog"  style="border:1px solid green;"></div>
-      <div id="BlueLog"   style="border:1px solid blue;"></div>
+      <div id="CenterLog" style="outline:1px solid gainsboro;"></div>
+      <div id="RedLog"    style="outline:1px solid #df0101;"></div>
+      <div id="GreenLog"  style="outline:1px solid #088a08;"></div>
+      <div id="BlueLog"   style="outline:1px solid #2e64fe;"></div>
     </div>
-    <div id="stats"></div>
+    <div id="ri" data-ot="<p>Yellow lines indicate the duration of Righteous Indignation remaining.</p><ol><li>10 seconds</li><li>30 seconds</li><li>1 minute</li><li>2 minutes</li><li>3 minutes</li></ol>" data-ot-target="true"><img src="img/40px-Brilliance.png" alt="Righteous Indignation" height="30px" width="30px"/></div>
+    <div id="MatchStatus"></div>
   </body>
   <script type="text/javascript" src="objectives.js">
   </script>
