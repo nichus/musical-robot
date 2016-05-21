@@ -686,6 +686,7 @@ class WorldStatus {
     this.start_time	  = Date.now();
     this.end_time	  = 0;
     this.mapInfo	  = null;
+    this.mapObjectives	  = new MapObjectives();
 
     ['Center','RedHome','BlueHome','GreenHome'].forEach(function(m,i,l) {
       this.maps[m] = new WvWMap(m);
@@ -816,9 +817,8 @@ function sanitizeObjective(objective,o) {
   });
   return objective;
 }
-function sanitizeMap(map) {
+function sanitizeMap(map,o) {
   var newMap  = new Map();
-  var o	      = new Objectives();
   var teams   = ['red','green','blue'];
   ['id','bonuses','deaths','kills','objectives','scores','type'].forEach(function(key) {
     switch(key) {
@@ -859,9 +859,9 @@ function sanitizeTeam(color, primaryId, all_worlds) {
 
   return team;
 }
-function sanitizeData(data) {
-  var sanitized = {};
-  var teams	= ['red','green','blue'];
+function sanitizeData(data,mapObjectives) {
+  var sanitized	  = {};
+  var teams	  = ['red','green','blue'];
   ['id','start_time','end_time','scores','worlds','all_worlds','kills','deaths','maps'].forEach(function(key) {
     switch (key) {
       case 'id':
@@ -895,7 +895,7 @@ function sanitizeData(data) {
       case 'maps':
 	sanitized[key] = new Array();
 	data[key].forEach(function(map,i) {
-	  sanitized[key][i] = sanitizeMap(map);
+	  sanitized[key][i] = sanitizeMap(map,mapObjectives);
 	});
 //	var current = new Array();
 //	data[key].forEach(function(map,i) { current.push(sanitizeMap(map)); });
@@ -920,7 +920,7 @@ function sanitizeData(data) {
 function updateStatus() {
   if (ws.running) {
     $.get(ws.status_url,function(data) {
-      var sanitized = sanitizeData(data);
+      var sanitized = sanitizeData(data,ws.mapObjectives);
       //console.log(sanitized);
       ws.updateWorld(sanitized);
     });
