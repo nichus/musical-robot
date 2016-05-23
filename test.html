@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <title>Canvas Experiments</title>
+    <link href="css/log.css" rel="stylesheet" />
+    <style>
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script type="text/javascript" src="moment.min.js"></script>
+    <script type="text/javascript" src="js/map_objectives.js"></script>
+  </head>
+  <body>
+    Testing in progress, actually it's probably already done...
+  </body>
+  <script type="text/javascript">
+class Match {
+  constructor(id) {
+    this._id	= id;
+    this._ready	= false;
+  }
+  received(data) {
+    console.log('Request succeeded with JSON response', data);
+    this.ready = true;
+    //ready(true);
+  }
+  fetch() {
+    var self = this;
+    function status(response) {
+      if (response.status >= 200 && response.status < 300) {
+	return Promise.resolve(response);
+      } else {
+	return Promise.reject(new Error(response.statusText))
+      }
+    }
+    fetch('https://api.guildwars2.com/v2/wvw/matches/'+this._id)
+      .then(status)
+      .then(function(response) { return response.json() })
+      .then(function(data) {self.received(data);})
+      .catch(function(error) {
+	console.log('Request failed', error);
+      });
+  }
+  set ready(val) {
+    this._ready = val
+  }
+  get ready() {
+    console.log(this._ready);
+    return this._ready;
+  }
+}
+    var mo = new MapObjectives();
+var a = new Match('1-3');
+a.fetch();
+console.log('foo: '+a.ready);
+window.setTimeout(function() { console.log(a.ready); console.log(mo.id('1143-117')); }, 5000);
+
+    console.log('foo');
+    console.log(mo.id('1143-117'));
+    class Foo {
+      constructor() {
+	this.foo = "bar";
+      }
+      two() { console.log("did"); }
+      one() { this.two(); }
+    }
+    var c = new Foo();
+    c.one();
+  </script>
+</html>
+

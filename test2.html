@@ -1,0 +1,159 @@
+<html>
+  <head>
+    <title>Proofing Concepts</title>
+    <link href="css/log.css" rel="stylesheet" />
+    <style>
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script type="text/javascript" src="moment.min.js"></script>
+    <script type="text/javascript" src="js/color.js"></script>
+    <style>
+      #emblem {
+	position: absolute;
+	top: 22px;
+	left: 170px;
+	height: 128px;
+	width: 128px;
+      }
+      #scratch {
+	position: absolute;
+	top: 22px;
+	left: 298px;
+	height: 128px;
+	width: 128px;
+	display: none;
+      }
+      .container {
+	position:absolute;
+	top: 172px;
+	width: 128px;
+	height: 640px;
+	background: black;
+      }
+      #fg {
+	left: 240px;
+      }
+      #bg {
+	left: 100px;
+      }
+      .layers {
+	position: absolute;
+	left: 0px;
+	width: 128px;
+	height: 128px;
+      }
+      .zero {
+	top: 0px;
+      }
+      .one {
+	top: 128px;
+      }
+      .two {
+	top: 256px;
+      }
+      .three {
+	top: 384px;
+      }
+      .four {
+	top: 512px;
+      }
+    </style>
+  </head>
+  <body>
+    Testing in progress, actually it's probably already done...
+    <canvas id="emblem"></canvas>
+    <canvas id="scratch"></canvas>
+    <div id="bg" class="container">
+      <div class="zero layers"></div>
+      <div class="one layers"></div>
+      <div class="two layers"></div>
+      <div class="three layers"></div>
+      <div class="four layers"></div>
+    </div>
+    <div id="fg" class="container">
+      <div class="zero layers"></div>
+      <div class="one layers"></div>
+      <div class="two layers"></div>
+      <div class="three layers"></div>
+      <div class="four layers"></div>
+    </div>
+  </body>
+  <script type="text/javascript">
+    var ac = new ApiColor();
+    //ac.color(11,'cloth').then(function(c) { $('#bg').css('background-color','rgb('+c.join(',')+')'); });
+    //ac.color(673,'cloth').then(function(c) { $('#fg').css('background-color','rgb('+c.join(',')+')'); });
+    //ac.color(146,'cloth').then(function(c) { $('#fg .two').css('background-color','rgb('+c.join(',')+')'); });
+
+    var em = new ApiImage();
+    var layers = [ 'zero', 'one', 'two', 'three', 'four' ];
+    //em.bg(2).then(function(e) {  e.forEach(function(l,i) { $('#bg .'+layers[i]).css('background-image','url('+l+')') }) });
+    //em.fg(147).then(function(e) {  console.log(e); e.forEach(function(l,i) { console.log(l); console.log('#fg .'+layers[i]); $('#fg .'+layers[i]).css('background-image','url('+l+')') }) });
+
+    //var colors = [ ac.color(11,'cloth'), ac.color(673,'cloth'), ac.color(146,'cloth) ];
+    var color_bg  = ac.color(11,'cloth');
+    var color_fg1 = ac.color(673,'cloth');
+    var color_fg2 = ac.color(146,'cloth');
+    var colors = [ color_bg, color_fg1, color_fg2 ];
+    var images = [ em.bg(2), em.fg(147) ];
+
+    Promise.all(colors.concat(images)).then(function(details) {
+	var emblem = document.querySelector('#emblem');
+	var scratch = document.querySelector('#scratch');
+	var emb_ctx   = emblem.getContext('2d');
+	var scr_ctx   = scratch.getContext('2d');
+	var color_bg  = details[0],
+	    color_fg1 = details[1],
+	    color_fg2 = details[2],
+	    image_bg  = details[3],
+	    image_fg  = details[4];
+
+	// This is not working, currently.
+	// The net cause is that the images array, is an array of strings, _not_ an array of Image objects.  
+	// I'll need to permute my code further to get this translation completed.
+	function colorshift(ctx,img,rgb) {
+	  var data,bits,len;
+	  ctx.clearRect(0,0,128,128);
+	  ctx.drawImage(img, 0, 0, 128, 128, 0, 0, 128, 128);
+
+	  data = ctx.getImageData(0,0,128,128);
+	  bits = data.data;
+	  len = bits.length;
+
+	  for (var p=0; p< len; p+=4) {
+	    bits[p+0] = rgb[0];
+	    bits[p+1] = rgb[1];
+	    bits[p+2] = rgb[2];
+	  }
+
+	  ctx.putImageData(data,0,0);
+	}
+	function renderLayer(target,temp,img,color,horiz,vert) {
+	  temp.clearRect(0,0,128,128);
+	  colorshift(temp,img,color);
+	  target.save();
+	  if (horiz !== -1) {
+	    target.scale(-1,1);
+	    target.translate(-128,0);
+	  }
+	  if (vert !== -1) {
+	    target.scale(1,-1);
+	    target.translate(0,-128);
+	  }
+	  target.drawImage(scratch,0,0,128,128,0,0,128,128);
+	  target.restore();
+	}
+	emblem.height = 128;
+	scratch.height = 128;
+	emblem.width = 128;
+	scratch.width = 128;
+	emb_ctx.clearRect(0,0,128,128);
+
+	renderLayer(emb_ctx,scr_ctx,image_bg[0],color_bg,-1,-1);
+	renderLayer(emb_ctx,scr_ctx,image_fg[0],[0,0,0],-1,-1);
+	renderLayer(emb_ctx,scr_ctx,image_fg[1],color_fg1,-1,-1);
+	renderLayer(emb_ctx,scr_ctx,image_fg[2],color_fg2,-1,-1);
+    });
+
+  </script>
+</html>
+
