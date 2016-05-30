@@ -10,30 +10,39 @@ class MapObjectives {
       106:   1,  109:   1,   110:   2,  114:   0,   115:   5,   116:   3
     };
     this.objectives = [];
-    fetch('https://api.guildwars2.com/v2/wvw/objectives')
-      .then(status)
-      .then(function(request){ return request.json(); })
-      .then(function(ids) {
-	var value = ids.join(',');
-	fetch('https://api.guildwars2.com/v2/wvw/objectives?ids='+value).then(status)
-	  .then(function(request){ return request.json(); })
-	  .then(function(data){
-	    self.objectives = data;
+    this.ready = new Promise(function(fulfill,reject) {
+      fetch('https://api.guildwars2.com/v2/wvw/objectives')
+	.then(status)
+	.then(function(request){ return request.json(); })
+	.then(function(ids) {
+	  var value = ids.join(',');
+	  fetch('https://api.guildwars2.com/v2/wvw/objectives?ids='+value).then(status)
+	    .then(function(request){ return request.json(); })
+	    .then(function(data){
+	      self.objectives = data;
 
-	    self.objectives.forEach(function(elem) {
-	      var id = elem.id.split('-');
-	      elem.index = self.indexes[id[1]];
-	    });
+	      self.objectives.forEach(function(elem) {
+		var id = elem.id.split('-');
+		elem.index = self.indexes[id[1]];
+	      });
+	      fulfill(self.objectives);
+	  });
 	});
-      });
+    });
   }
   id(tgt) {
-    return this.objectives.find(function(elem) { return elem.id == tgt });
+    return this.ready.then(function(objectives) {
+      return objectives.find(function(elem) { return elem.id == tgt });
+    });
   }
   map_id(id) {
-    return this.objectives.filter(function(elem) { return elem.map_id == id });
+    return this.ready.then(function(objectives) {
+      return objectives.filter(function(elem) { return elem.map_id == id });
+    });
   };
   type(map_id,type) {
-    return this.map_id(map_id).filter(function(elem) { return elem.type == type });
+    return this.map_id(map_id).then(function(objectives) {
+      return objectives.filter(function(elem) { return elem.type == type });
+    });
   };
 }

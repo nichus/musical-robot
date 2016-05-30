@@ -93,7 +93,6 @@ function MyCanvas(id,grid) {
     this.transblack   = function() { return transblack; };
   }
 }
-
 class Objective {
   constructor(details) {
     this.claimed_at   = details.claimed_at;
@@ -127,7 +126,7 @@ function Castle(myc,count,desc) {
   var captured_at   = 0;
   this.id           = function() { return status.id }
   var objective	    = new Objective(desc);
-  console.log(objective);
+  //console.log(objective);
 
   function draw(stroke,fill) {
     var ctx         = canvas.context;
@@ -501,7 +500,6 @@ function Camp(myc,count,desc) {
     return 0;
   }
   this.update = function(st,logger) {
-    // console.log(st);
     logger.log({'desc': st, 'prev': status, 'curr': st});
     captured_at = st.last_flipped / 1000;
     if (st.claimed_by != null && st.claimed_at != null && st.claimed_at > updated) {
@@ -803,17 +801,18 @@ function sanitizeObjective(objective,o) {
     }
   });
 
-  details = o.id(objective['id']);
-  ['coord','index','label_coord','name','sector_id'].forEach(function(key) {
-    switch (key) {
-      case 'coord':
-      case 'index':
-      case 'label_coord':
-      case 'name':
-      case 'sector_id':
-	objective[key] = details[key];
-	break;
-    }
+  o.id(objective['id']).then(function(details) {
+    ['coord','index','label_coord','name','sector_id'].forEach(function(key) {
+      switch (key) {
+	case 'coord':
+	case 'index':
+	case 'label_coord':
+	case 'name':
+	case 'sector_id':
+	  objective[key] = details[key];
+	  break;
+      }
+    });
   });
   return objective;
 }
@@ -896,6 +895,7 @@ function sanitizeData(data,mapObjectives) {
 	sanitized[key] = new Array();
 	data[key].forEach(function(map,i) {
 	  sanitized[key][i] = sanitizeMap(map,mapObjectives);
+	  //console.log(sanitized[key][i]);
 	});
 //	var current = new Array();
 //	data[key].forEach(function(map,i) { current.push(sanitizeMap(map)); });

@@ -12,6 +12,7 @@ function WvWLogger(id,colors) {
     return "" + now.getUTCHours() + ":" + now.getUTCMinutes() + ":" + now.getUTCSeconds();
   }
   function formatEntry(data) {
+    //console.log(data);
     var item            = document.createElement('div');
     var icon            = document.createElement('div');
     var objective       = document.createElement('div');
