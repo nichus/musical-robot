@@ -8,6 +8,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
     <script type="text/javascript" src="js/opentip-jquery.min.js"></script>
     <script type="text/javascript" src="js/moment.min.js"></script>
+    <script type="text/javascript" src="js/cookies.js"></script>
     <script type="text/javascript" src="js/logger.js"></script>
     <script type="text/javascript" src="js/map_objectives.js"></script>
     <script type="text/javascript" src="js/canvas.js"></script>
@@ -20,7 +21,11 @@
   </head>
   <body>
     <div>
-      <select name="world" id="world"></select><br/><button name="button" id="button">Go</button>
+      <select name="world" id="world">
+	<option selected disabled>Select a World...</option>
+      </select>
+      <br/>
+      <button name="button" id="button">Go</button>
     </div>
     <div id="teams"><div id="red" class="team"></div><div id="green" class="team"></div><div id="blue" class="team"></div></div>
     <div style="float: left; max-width: 200px;">
@@ -50,13 +55,15 @@
   </script-->
   <script type="text/javascript" src="js/worlds.js"></script>
   <script type="text/javascript">
-    var worlds = new Worlds('#world');
+    var worlds = new Worlds('#world',{'local':true});
     worlds.fetch();
+    /*
     var objectives = new MapObjectives();
     Promise.all([worlds.ready,objectives.ready]).then(function() {
 	console.log('All remote data retrieved, begin fetching');
 	});
+    */
   </script>
-  <script type="text/javascript" src="wvw.js">
-  </script>
+  <!--script type="text/javascript" src="wvw.js">
+  </script-->
 </html>

@@ -328,14 +328,14 @@ function updateStatus() {
   }
 }
 
-/*
-class World {
-  constructor(select,go) {
-    this._select  = $(select);
-    this._go	  = $(go);
-  }
-}
-*/
+var worlds = new Worlds('#world');
+var objectives = new MapObjectives();
+
+worlds.fetch();
+
+Promise.all([worlds.ready,objectives.ready]).then(function() {
+  console.log('All remote data retrieved, processing can be started');
+});
 
 $.when(
   $.getJSON( "world_names_en.json", function(data) {
@@ -343,9 +343,6 @@ $.when(
     var found = data.find(function(elem) { return elem.name === 'Crystal Desert' })
     ws.worldId(found.id);
   }),
-  $.getJSON( "maps.json", function(data) {
-    ws.information = data;
-  })
 ).then(function() {
   updateStatus();
   ws.interval(window.setInterval(updateStatus,tick));
