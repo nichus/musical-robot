@@ -1,5 +1,5 @@
+/*
 class Watcher { // {{{
-/*`
 function WvWWatcher(stat,pause) { // {{{
   function findMatch(id) {
     if (id == null) {
