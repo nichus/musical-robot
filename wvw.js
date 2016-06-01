@@ -1,5 +1,6 @@
-class WvWMap {
-  constructor(which) {
+/* vim: set fdm=marker */
+class WvWMap {//{{{
+  constructor(which) {//{{{
     this.name	    = which;
     this.objectives = null;
     this.status	    = null;
@@ -8,8 +9,8 @@ class WvWMap {
     this.canvas	    = new MyCanvas(this.graph,false);
     this.logger	    = new WvWLogger(this.graph.replace('Home','Log'),this.canvas.colors);
     this.infoURL    = 'https://api.guildwars2.com/v2/maps/';
-  }
-  updateStatus(newStatus,newMap=false,info) {
+  }//}}}
+  updateStatus(newStatus,newMap=false,info) {//{{{
     if (newMap) {
       // console.log(this.name+ " new Map detected");
       this.logger.reset();
@@ -41,8 +42,8 @@ class WvWMap {
     }
     this.status = newStatus;
     this.draw();
-  }
-  draw() {
+  }//}}}
+  draw() {//{{{
     this.canvas.drawBackground(this.name);
     ['Camp','Tower','Keep','Ruins','Castle'].forEach(function(type) {
       this.objectives.get(type).forEach(function(objective) {
@@ -50,10 +51,10 @@ class WvWMap {
 	objective.update(tgt,this.logger);
       },this);
     },this);
-  }
-}
-class WorldStatus {
-  constructor(statusDiv) {
+  }//}}}
+}//}}}
+class WorldStatus {//{{{
+  constructor(statusDiv) {//{{{
     this.statdiv	  = $("#"+statusDiv);
     this.world_id	  = null;
     this.match_id	  = null;
@@ -71,61 +72,47 @@ class WorldStatus {
     ['Center','RedHome','BlueHome','GreenHome'].forEach(function(m,i,l) {
       this.maps[m] = new WvWMap(m);
     },this);
-  }
-
-  get endTime() {
-    return this.end_time;
-  }
-  get finished() {
-    return Date.now() > this.endTime;
-  }
-  get worldId() {
+  }//}}}
+  get endTime() { return this.end_time; }
+  get finished() { return Date.now() > this.endTime; }
+  get worlds() { return this.team; }
+  get lastUpdate() { return this.last_update; }
+  get worldId() {//{{{
     if (this.running) {
       return this.world_id;
     }
     return null;
-  }
-  get running() {
+  }//}}}
+  get running() {//{{{
     return this.last_update == 0 || ((this.match_id != null) && !this.finished);
-  }
-  get lastUpdate() {
-    return this.last_update;
-  }
-  get status_url() {
+  }//}}}
+  get status_url() {//{{{
     if (this.world_id != null) {
       return "https://api.guildwars2.com/v2/wvw/matches?world=" + this.world_id;
     }
     return null;
-  }
-  set worlds(info) {
+  }//}}}
+  set worlds(info) {//{{{
     if (info) {
       this.team = info;
     }
-  }
-  get worlds() {
-    return this.team;
-  }
-
-  interval(id) {
-    this.interval_id = id;
-  }
-  worldId(id) {
-    this.world_id = id;
-  }
-  matchCompleted() {
+  }//}}}
+  interval(id) { this.interval_id = id; }
+  worldId(id) { this.world_id = id; }
+  matchCompleted() {//{{{
     this.statdiv.html("Match completed, status updates halted.  Reload to monitor current match");
     clearInterval(this.interval_id);
     this.interval_id = null;
-  }
-  lookupGuilds(newStatus) {
+  }//}}}
+  lookupGuilds(newStatus) {//{{{
     newStatus.maps.forEach(function(element,i,l) {
       element.objectives.forEach(function(objective,j,m) {
 	if (objective.claimed_by != null) {
 	}
       },this);
     },this);
-  }
-  updateWorld(newStatus) {
+  }//}}}
+  updateWorld(newStatus) {//{{{
     //this.lookupGuilds(newStatus);
     console.log(newStatus);
     var now = new Date();
@@ -146,13 +133,13 @@ class WorldStatus {
     },this);
     this.scores = status.scores;
     this.last_update = now;
-  }
-}
+  }//}}}
+}//}}}
 
 var ws	    = new WorldStatus('MatchStatus');
 var guilds  = new WvWGuilds();
 
-function displayTeam(color,team,score,kills,deaths) {
+function displayTeam(color,team,score,kills,deaths) {//{{{
   var content = "<div class='captain'>"+team[0].name+"</div>";
   content += "<div class='members'> w/ "+team.slice(1).map(function(e){ return e.name; }).join(' &amp; ')+"</div>";
   content += "<div class='stats'>";
@@ -160,8 +147,8 @@ function displayTeam(color,team,score,kills,deaths) {
   content += "<div class='kills'> k: "+kills.toLocaleString()+" </div>";
   content += "<div class='deaths'> d: "+deaths.toLocaleString()+" </div>";
   $("#"+color+".team").html(content);
-}
-function sanitizeObjective(objective,o) {
+}//}}}
+function sanitizeObjective(objective,o) {//{{{
   ['id','owner','type','claimed_at','claimed_by','last_flipped'].forEach(function(key) {
     switch (key) {
       case 'id':
@@ -197,8 +184,8 @@ function sanitizeObjective(objective,o) {
     }
   });
   return objective;
-}
-function sanitizeMap(map,o) {
+}//}}}
+function sanitizeMap(map,o) {//{{{
   var newMap  = new Map();
   var teams   = ['red','green','blue'];
   ['id','bonuses','deaths','kills','objectives','scores','type'].forEach(function(key) {
@@ -227,11 +214,11 @@ function sanitizeMap(map,o) {
   newMap['features']['Keep']	= o.type(newMap['id'],'Keep');
   newMap['features']['Castle']  = o.type(newMap['id'],'Castle');
   return newMap;
-}
-function mapWorld(id) {
+}//}}}
+function mapWorld(id) {//{{{
   return ws.worlds.find(function(elem) { return elem.id === id })
-}
-function sanitizeTeam(color, primaryId, all_worlds) {
+}//}}}
+function sanitizeTeam(color, primaryId, all_worlds) {//{{{
   var team	  = new Array();
 
   team.push(mapWorld(primaryId));
@@ -239,8 +226,8 @@ function sanitizeTeam(color, primaryId, all_worlds) {
   otherIds.forEach(function(elem) { team.push(mapWorld(elem)); });
 
   return team;
-}
-function sanitizeData(data,mapObjectives) {
+}//}}}
+function sanitizeData(data,mapObjectives) {//{{{
   var sanitized	  = {};
   var teams	  = ['red','green','blue'];
   ['id','start_time','end_time','scores','worlds','all_worlds','kills','deaths','maps'].forEach(function(key) {
@@ -296,7 +283,7 @@ function sanitizeData(data,mapObjectives) {
   //sanitized.set('headers',headers);
 
   return sanitized;
-}
+}//}}}
 
 const interval	= 5000;
 const tick	= 500;
@@ -304,7 +291,7 @@ var last_update	= 0;
 var sanitized	= undefined;
 var max_loops	= 20;
 
-function updateStatus() {
+function updateStatus() {//{{{
   if (ws.running) {
     // console.log(Date.now() + ' >= ' + (last_update + interval) + ": " + (Date.now() >= (last_update + interval)));
     if (Date.now() >= (last_update+interval)) {
@@ -326,24 +313,47 @@ function updateStatus() {
   } else {
     ws.matchCompleted();
   }
+}//}}}
+
+class MatchStatus {
+  constructor() {
+    this._		= {};
+    this._.lastUpdate 	= 0;
+    this._.tick		= 500;
+    this._.interval	= 5000;
+    this._.wid;
+    this._.matchActive	= false;
+    this._.baseURL	= 'https://api.guildwars2.com/v2/wvw/matches?world_id=';
+  }
+  start(wid) {
+    if (this._.wid != wid) {
+      this._.wid = wid;
+    }
+    this._.matchActive	= true;
+    this._.lastUpdate	= 0;
+  }
+  stop() {
+    this._.matchActive	= false;
+  }
+  get url {
+    if (this._.wid != undefined) {
+      return this._.baseURL + this._.wid;
+    } else {
+      return undefined;
+    }
+  }
+  update() {
+    if (this._.matchActive && (this.url != undefined)) {
+      fetch(this.url)
+	.then(status)
+	.then(function(response) { return response.json() })
+	.then(function(match) {
+	})
+	.catch(function(error) {
+	  console.log('There was an error retrieving match data', error);
+	});
+    }
+  }
 }
-
-var worlds = new Worlds('#world');
-var objectives = new MapObjectives();
-
-worlds.fetch();
-
-Promise.all([worlds.ready,objectives.ready]).then(function() {
-  console.log('All remote data retrieved, processing can be started');
-});
-
-$.when(
-  $.getJSON( "world_names_en.json", function(data) {
-    ws.worlds = data;
-    var found = data.find(function(elem) { return elem.name === 'Crystal Desert' })
-    ws.worldId(found.id);
-  }),
-).then(function() {
   updateStatus();
   ws.interval(window.setInterval(updateStatus,tick));
-});

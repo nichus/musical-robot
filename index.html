@@ -55,14 +55,13 @@
   </script-->
   <script type="text/javascript" src="js/worlds.js"></script>
   <script type="text/javascript">
-    var worlds = new Worlds('#world',{'local':true});
+    var options = {'local': true};
+    var worlds = new Worlds('#world');
     worlds.fetch();
-    /*
     var objectives = new MapObjectives();
     Promise.all([worlds.ready,objectives.ready]).then(function() {
-	console.log('All remote data retrieved, begin fetching');
+	console.log('All remote data retrieved, begin updating');
 	});
-    */
   </script>
   <!--script type="text/javascript" src="wvw.js">
   </script-->
