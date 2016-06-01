@@ -1,13 +1,6 @@
 /*
  * This object is nice, and works, but the functionality it provides is no longer needed.
  *
-function status(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return Promise.resolve(response);
-  } else {
-    return Promise.reject(new Error(response.statusText));
-  }
-}
 class Maps {
   constructor() {
     this._ready	  = new Promise(function(fulfill,reject) {

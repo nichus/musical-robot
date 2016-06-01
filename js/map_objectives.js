@@ -1,3 +1,4 @@
+/* vim: set fdm=marker */
 class Objective {
   constructor(details) {
     this.id		  = details.id;
@@ -43,7 +44,6 @@ class Objective {
   get index() {
     this.index_map[this.obj_id];
   }
-
   update(status = undefined) {
     if (status == undefined) { return; }
     this.previous_status = this.current_status;
@@ -68,7 +68,6 @@ class ObjectiveStatus {
   set guild(g) { this._['guild'] = g; }
   set pguild(p) { p.then(function(g){ this.guild = g; this._['guild'] = g; });  }
 }
-
 class MapObjectives {
   constructor() {
     var self = this;
@@ -98,7 +97,6 @@ class MapObjectives {
   get ready() {
     return this._ready;
   }
-
   id(tgt) {
     return this.ready.then(function(obj) {
       return obj.find(function(elem) { return elem.id == tgt });
