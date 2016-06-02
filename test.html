@@ -40,6 +40,27 @@
     <div id="MatchStatus"></div>
   </body>
   <script type="text/javascript">
+class Foo {
+  constructor() {
+    this.blah = "foobar";
+    this._interval  = undefined;
+    this._updates   = 0;
+  }
+  update(now) {
+    console.log(this.blah);
+    this.blah = now;
+    this._updates += 1;
+    if (this._updates > 20) {
+      clearInterval(this._interval);
+    }
+  }
+  set interval(id) {
+    this._interval = id;
+  }
+}
+var f = new Foo();
+f.interval = setInterval(function() { f.update(Date.now()) },1000);
+/*
   var mo = new MapObjectives();
   mo.id('96-37').then(function(obj) {
       console.log(obj);
@@ -47,5 +68,6 @@
   mo.type('96','Camp').then(function(obj) {
       console.log(obj);
       });
+      */
   </script>
 </html>

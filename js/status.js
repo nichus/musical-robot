@@ -1,5 +1,5 @@
 class MatchStatus {
-  constructor() {
+  constructor(options) {
     this._		= {};
     this._.lastUpdate 	= 0;
     this._.tick		= 500;
@@ -7,6 +7,9 @@ class MatchStatus {
     this._.wid;
     this._.matchActive	= false;
     this._.baseURL	= 'https://api.guildwars2.com/v2/wvw/matches?world_id=';
+    if (options.local) {
+      this._.baseUrl = 'json/match.json';
+    }
   }
   start(wid) {
     if (this._.wid != wid) {

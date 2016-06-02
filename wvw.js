@@ -285,11 +285,7 @@ function sanitizeData(data,mapObjectives) {//{{{
   return sanitized;
 }//}}}
 
-const interval	= 5000;
-const tick	= 500;
-var last_update	= 0;
 var sanitized	= undefined;
-var max_loops	= 20;
 
 function updateStatus() {//{{{
   if (ws.running) {
@@ -315,5 +311,9 @@ function updateStatus() {//{{{
   }
 }//}}}
 
-  updateStatus();
-  ws.interval(window.setInterval(updateStatus,tick));
+//updateStatus();
+//ws.interval(window.setInterval(updateStatus,tick));
+
+
+
+
