@@ -11,6 +11,8 @@
     <script type="text/javascript" src="js/helpers.js"></script>
     <script type="text/javascript" src="js/logger.js"></script>
     <script type="text/javascript" src="js/map_objectives.js"></script>
+    <script type="text/javascript" src="js/sanitizer.js"></script>
+    <script type="text/javascript" src="js/status.js"></script>
     <script type="text/javascript" src="js/canvas.js"></script>
     <script type="text/javascript" src="js/castle.js"></script>
     <script type="text/javascript" src="js/keep.js"></script>
@@ -55,13 +57,13 @@
   </script-->
   <script type="text/javascript" src="js/worlds.js"></script>
   <script type="text/javascript">
-    var options = {'local': true};
+var options = {}; //{'local': true};
     var matchStatus = new MatchStatus();
+    var guilds = new WvWGuilds();
     var worlds = new Worlds('#world',options);
-    worlds.fetch();
-    var objectives = new MapObjectives(options);
-    Promise.all([worlds.ready,objectives.ready]).then(function() {
+    Promise.all([worlds.ready]).then(function() {
 	console.log('All remote data retrieved, begin updating');
+	worlds.fetch(matchStatus);
 	});
 
   </script>

@@ -2,17 +2,31 @@ class Worlds {
   constructor(selector,options={}) {
     this._ready	  = undefined;
     this.element  = selector;
-    this.worlds	  = [];
+    this._worlds  = [];
     this._options = options;
     this._url	  = "https://api.guildwars2.com/v2/worlds?ids=all";
     if (options.local) {
       this._url   = "json/worlds.json";
     }
+    this._world	  = undefined;
   }
   get ready() {
     return this._ready;
   }
-  fetch() {
+  get world() {
+    return this._world;
+  }
+  get worlds() {
+    return this._worlds;
+  }
+  fromCookie(matchStatus) {
+    this._world = getCookie('worldId');
+    if (this.world != null) {
+      $(this.element).val(this.world);
+      matchStatus.start(this);
+    }
+  }
+  fetch(mS) {
     var self = this;
     this._ready = new Promise(function(fulfill,reject) {
       fetch(self._url)
@@ -20,7 +34,7 @@ class Worlds {
 	.then(function(request){ return request.json(); })
         .then(function(json) {
 	  var appendix;
-	  self.worlds = json.sort(function(a,b) {
+	  self._worlds = json.sort(function(a,b) {
 	    if (a.name > b.name) { return  1; }
 	    if (a.name < b.name) { return -1; }
 	    return 0;
@@ -30,12 +44,14 @@ class Worlds {
 	    appendix += "<option value='"+e.id+"'>"+e.name+"</option>";
 	  });
 	  $(self.element).append(appendix);
-	  var old_world_id = getCookie('world_id');
-	  if (old_world_id != null) {
-	    $(self.element).val(old_world_id);
-	  }
-	  $(self.element).change(function() {
-	    console.log('Selected world: ' + $(self.element).val());
+	  self.ready.then(function() {
+	    $(self.element).change(function() {
+	      self._world = $(self.element).val();
+	      setCookie('worldId',self.world);
+	      console.log('Selected world: ' + self.world);
+	      mS.start(self);
+	    });
+	    self.fromCookie(mS);
 	  });
 	  fulfill(self.worlds);
 	})
