@@ -44,8 +44,9 @@ class MatchStatus {
   }
   update() {
     var self = this;
+    var fudge = this._.tick / 5.0;
     if (this._.matchActive && (this.url != undefined)) {
-      if ((Date.now() - self.updated) >= self._.interval) {
+      if ((Date.now() - self.updated)+fudge >= self._.interval) {
 	//console.log('update: '+this.url);
 	fetch(this.url)
 	  .then(status)
