@@ -2,12 +2,14 @@ class MatchStatus {
   constructor(options={}) {
     this._		= {};
     this._.lastUpdate 	= 0;
-    this._.tick		= 500;
+    this._.data		= undefined;
+    this._.tick		= 1000;
     this._.interval	= 5000;
     this._.wid;
     this._.matchActive	= false;
     this._.objectives	= new MapObjectives(options);
     this._.baseURL	= 'https://api.guildwars2.com/v2/wvw/matches?world=';
+    this._.statusDiv	= $("#"+options['statusDiv']);
     if (options.local) {
       this._.baseURL = 'json/match.json.';
     }
@@ -44,21 +46,21 @@ class MatchStatus {
     var self = this;
     if (this._.matchActive && (this.url != undefined)) {
       if ((Date.now() - self.updated) >= self._.interval) {
-	console.log('update: '+this.url);
+	//console.log('update: '+this.url);
 	fetch(this.url)
 	  .then(status)
 	  .then(function(response) { return response.json() })
 	  .then(function(match) {
-	    self._.lastUpdate = Date.now();
 	    //console.log(match);
-	    var clean = sanitizeMatch(match,self._.worlds,self._.objectives);
-	    console.log(clean);
+	    self._.lastUpdate = Date.now();
+	    self._.data = sanitizeMatch(match,self._.worlds,self._.objectives);
+	    console.log('update',self.url,self._.data);
 	  })
 	  .catch(function(error) {
 	    console.log('There was an error retrieving match data', error);
 	  });
       } else {
-	console.log('tick');
+	console.log('tick',self._.data);
       }
     }
   }

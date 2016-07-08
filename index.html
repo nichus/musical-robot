@@ -57,7 +57,10 @@
   </script-->
   <script type="text/javascript" src="js/worlds.js"></script>
   <script type="text/javascript">
-var options = {}; //{'local': true};
+    var options = {
+      //'local': true,
+      'statusDiv': 'MatchStatus'
+    }; //{'local': true};
     var matchStatus = new MatchStatus();
     var guilds = new WvWGuilds();
     var worlds = new Worlds('#world',options);

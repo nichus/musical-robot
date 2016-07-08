@@ -1,6 +1,7 @@
 function sanitizeMatch(data,worlds,mapObjectives) {
   var sanitized	  = {};
   var teams	  = ['red','green','blue'];
+  sanitized['current_time'] = Date.now();
   ['id','start_time','end_time','scores','worlds','all_worlds','kills','deaths','maps'].forEach(function(key) {
     switch (key) {
       case 'id':
