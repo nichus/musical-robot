@@ -51,7 +51,7 @@ class Objective {
   }
 }
 class ObjectiveStatus {
-  constructor(status) {
+  constructor(details) {
     this._	            = new Map();
     this._['id']            = details.id;
     this._['claimed_at']    = details.claimed_at;
