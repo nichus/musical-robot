@@ -25,6 +25,20 @@ body {
   top: 5px;
   padding: 3px; 
 }
+.team.selected {
+  box-shadow: 3px 3px 5px #555555;
+  outline: 1px solid black;
+}
+.team .captain {
+  color: #eee;
+} 
+.team .members {
+  text-align: right;
+}
+.team.selected .captain {
+  color: #fff;
+  font-weight: bold;
+}
 #red.team { right: 268px; background: #df0101; }
 #green.team { right: 138px; background: #088a08; }
 #blue.team { right: 8px; background: #2e64fe; }

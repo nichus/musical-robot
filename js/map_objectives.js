@@ -1,5 +1,5 @@
 /* vim: set fdm=marker */
-class Objective {
+class Objective {//{{{
   constructor(details) {
     this.id		  = details.id;
     this.coord		  = details.coord;
@@ -49,8 +49,8 @@ class Objective {
     this.previous_status = this.current_status;
     this.current_status = status;
   }
-}
-class ObjectiveStatus {
+}//}}}
+class ObjectiveStatus {//{{{
   constructor(details) {
     this._	            = new Map();
     this._['id']            = details.id;
@@ -67,9 +67,9 @@ class ObjectiveStatus {
 
   set guild(g) { this._['guild'] = g; }
   set pguild(p) { p.then(function(g){ this.guild = g; this._['guild'] = g; });  }
-}
-class MapObjectives {
-  constructor() {
+}//}}}
+class MapObjectives {//{{{
+  constructor() {//{{{
     var self = this;
     this.objectives = [];
     this._ready = new Promise(function(fulfill,reject) {
@@ -83,33 +83,35 @@ class MapObjectives {
 	    .then(function(request){ return request.json(); })
 	    .then(function(data){
 	      data.forEach(function(elem) {
-		//console.log(elem);
-		//var obj = new Objective(elem);
-		////console.log(obj);
-		//self.objectives.push(obj);
-		self.objectives.push(new Objective(elem));
+		// MapId 968 == "Edge of the Mists", let's not waste our time
+		if (elem.map_id != 968) {
+		  //var obj = new Objective(elem);
+		  ////console.log(obj);
+		  //self.objectives.push(obj);
+		  self.objectives.push(new Objective(elem));
+		}
 	      });
 	      fulfill(self.objectives);
 	  });
 	});
     });
-  }
-  get ready() {
+  }//}}}
+  get ready() {//{{{
     return this._ready;
-  }
-  id(tgt) {
+  }//}}}
+  id(tgt) {//{{{
     return this.ready.then(function(obj) {
       return obj.find(function(elem) { return elem.id == tgt });
     });
-  }
-  map_id(id) {
+  }//}}}
+  map_id(id) {//{{{
     return this.ready.then(function(obj) {
       return obj.filter(function(elem) { return elem.map_id == id });
     });
-  };
-  type(map_id,type) {
+  };//}}}
+  type(map_id,type) {//{{{
     return this.map_id(map_id).then(function(obj) {
       return obj.filter(function(elem) { return elem.type == type });
     });
-  };
-}
+  };//}}}
+}//}}}

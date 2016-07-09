@@ -1,4 +1,4 @@
-/* vim: set fdm=marker */
+/* vim: set fdm=marker: */
 class WvWMap {//{{{
   constructor(which) {//{{{
     this.name	    = which;

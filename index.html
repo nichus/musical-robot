@@ -61,7 +61,7 @@
       //'local': true,
       'statusDiv': 'MatchStatus'
     }; //{'local': true};
-    var matchStatus = new MatchStatus();
+    var matchStatus = new MatchStatus(options);
     var guilds = new WvWGuilds();
     var worlds = new Worlds('#world',options);
     Promise.all([worlds.ready]).then(function() {

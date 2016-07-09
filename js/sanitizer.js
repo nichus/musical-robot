@@ -46,9 +46,11 @@ function sanitizeMatch(data,worlds,mapObjectives) {
     }
   });
   var worlds = new Map();
+  /*
   teams.forEach(function(color) {
-    worlds.set(color,sanitizeTeam(color,data['worlds'][color],data['all_worlds'][color]));
+    worlds.set(color,sanitizeTeam(data['worlds'][color],data['all_worlds'][color]));
   });
+  */
   //console.log(worlds);
   sanitized['teams'] = worlds;
   //headers.set('worlds',worlds);
@@ -125,7 +127,7 @@ function sanitizeObjective(objective,o) {
   });
   return objective;
 }
-function sanitizeTeam(color, primaryId, all_worlds) {
+function sanitizeTeam(primaryId, all_worlds) {
   var team	  = new Array();
 
   team.push(mapWorld(primaryId));
