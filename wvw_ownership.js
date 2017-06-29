@@ -434,7 +434,7 @@ function Camp(myc,count,desc) {
     return 0;
   }
   function angle() {
-    return (status.index*(2*Math.PI)/sites) + rotation()-Math.PI/2.0;
+    return (status.index*(2*Math.PI)/count) + rotation()-Math.PI/2.0;
   }
   function angle1() {
     return angle()-(width/2.0);
@@ -645,46 +645,46 @@ class WvWMap {
     this.infoURL    = 'https://api.guildwars2.com/v2/maps/';
   }
   updateStatus(newStatus,newMap=false,info) {
+    var canvas      = this.canvas;
+    this.status     = newStatus;
+
+    console.log(newStatus);
     if (newMap) {
       // console.log(this.name+ " new Map detected");
       this.logger.reset();
       this.objectives = new Map([['Camp', []],['Tower', []],['Keep', []],['Castle', []],['Ruins', []]]);
-      //console.log(newStatus);
-      newStatus['objectives'].forEach(function(e,i,l) {
-        if (e.type === "Camp") {
-            this.objectives.get('Camp').push(
-              new Camp(this.canvas,newStatus['features']['Camp'].length,e)
-            );
-        } else if (e.type === "Tower") {
-            this.objectives.get('Tower').push(
-              new Tower(this.canvas,newStatus['features']['Tower'].length,e)
-            );
-        } else if (e.type === "Keep" && ! (e.id.endsWith('-113') || e.id.endsWith('-37'))) {
-            this.objectives.get('Keep').push(
-              new Keep(this.canvas,newStatus['features']['Keep'].length,e)
-            );
-        } else if (e.type === "Castle" || (e.type === "Keep" && (e.id.endsWith('-113') || e.id.endsWith('-37')))) {
-            this.objectives.get('Castle').push(
-              new Castle(this.canvas,newStatus['features']['Castle'].length,e)
-            );
-        } else if (e.type === "Ruins") {
-            this.objectives.get('Ruins').push(
-              new Ruins(this.canvas,newStatus['features']['Ruins'].length,e)
-            );
-        }
-      },this);
+      var objectives  = this.objectives;
+      Promise.all([ newStatus['features']['Camp'], newStatus['features']['Tower'], newStatus['features']['Keep'], newStatus['features']['Castle'], newStatus['features']['Ruins'] ]).then(values => {
+        newStatus['objectives'].forEach(function(e,i,l) {
+          if (e.type === "Camp") {
+            objectives.get('Camp').push( new Camp(canvas,values[0].length,e) );
+          } else if (e.type === "Tower") {
+            objectives.get('Tower').push( new Tower(canvas,values[1].length,e) );
+          } else if (e.type === "Keep" && ! (e.id.endsWith('-113') || e.id.endsWith('-37'))) {
+            objectives.get('Keep').push( new Keep(canvas,values[2].length,e) );
+          } else if (e.type === "Castle" || (e.type === "Keep" && (e.id.endsWith('-113') || e.id.endsWith('-37')))) {
+            objectives.get('Castle').push( new Castle(canvas,values[3].length,e) );
+          } else if (e.type === "Ruins") {
+            objectives.get('Ruins').push( new Ruins(canvas,values[4].length,e) );
+          }
+        });
+      });
     }
-    this.status = newStatus;
     this.draw();
   }
   draw() {
     this.canvas.drawBackground(this.name);
-    ['Camp','Tower','Keep','Ruins','Castle'].forEach(function(type) {
-      this.objectives.get(type).forEach(function(objective) {
-        var tgt = this.status.objectives.find(function(obj) { return obj.id == objective.id() });
-        objective.update(tgt,this.logger);
+    var objectives  = this.objectives;
+    var status      = this.status;
+    var logger      = this.logger;
+    Promise.all([ status['features']['Camp'], status['features']['Tower'], status['features']['Keep'], status['features']['Ruins'], status['features']['Castle'] ]).then(values => {
+      ['Camp','Tower','Keep','Ruins','Castle'].forEach(function(type) {
+        objectives.get(type).forEach(function(objective) {
+          var tgt = status.objectives.find(function(obj) { return obj.id == objective.id() });
+          objective.update(tgt,logger);
+        });
       },this);
-    },this);
+    });
   }
 }
 class WorldStatus {
@@ -821,16 +821,8 @@ function sanitizeObjective(objective,o) {
   });
 
   o.id(objective['id']).then(function(details) {
-    ['coord','index','label_coord','name','sector_id'].forEach(function(key) {
-      switch (key) {
-	case 'coord':
-	case 'index':
-	case 'label_coord':
-	case 'name':
-	case 'sector_id':
-	  objective[key] = details[key];
-	  break;
-      }
+    ['coord','index','label_coord','name','sector_id','chat_link','marker'].forEach(function(key) {
+      objective[key] = details[key];
     });
   });
   return objective;
@@ -914,7 +906,7 @@ function sanitizeData(data,mapObjectives) {
 	sanitized[key] = new Array();
 	data[key].forEach(function(map,i) {
 	  sanitized[key][i] = sanitizeMap(map,mapObjectives);
-	  //console.log(sanitized[key][i]);
+	  // console.log(i, map,mapObjectives,sanitized[key][i]);
 	});
 //	var current = new Array();
 //	data[key].forEach(function(map,i) { current.push(sanitizeMap(map)); });
@@ -939,8 +931,9 @@ function sanitizeData(data,mapObjectives) {
 function updateStatus() {
   if (ws.running) {
     $.get(ws.status_url,function(data) {
+      // console.log(data);
       var sanitized = sanitizeData(data,ws.mapObjectives);
-      //console.log(sanitized);
+      // console.log(sanitized);
       ws.updateWorld(sanitized);
     });
   } else if (ws.finished) {

@@ -39,10 +39,18 @@
 #logContainer .log_guild {
   position: absolute;
   top: 0px;
-  left: 210px;
+  left: 240px;
   width: 50px;
   height: 20px;
   text-align: center;
+}
+#logContainer .log_ppt {
+  position: absolute;
+  top: 0px;
+  left: 210px;
+  width: 30px;
+  height: 20px;
+  color: white;
 }
 #logContainer .log_guild.released {
   text-decoration: line-through;

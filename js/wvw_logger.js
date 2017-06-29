@@ -20,6 +20,9 @@ function WvWLogger(id,colors) {
     var guild           = document.createElement('div');
     var time            = document.createElement('div');
     var message         = document.createElement('div');
+    var ppt             = document.createElement('div');
+    var yak             = document.createElement('div');
+    var upgrades        = document.createElement('div');
 
     if (data.prev == null) {
       return null;
@@ -49,19 +52,26 @@ function WvWLogger(id,colors) {
     icon.setAttribute('class','log_icon ' + data.curr.owner.toLowerCase());
     icon.appendChild(document.createElement('img'));
     icon.firstChild.setAttribute('src',iconmap[data.desc.type]);
+    //icon.firstChild.setAttribute('src',data.desc.marker);
 
     objective.setAttribute('class','log_objective ' + data.curr.owner.toLowerCase());
     objective.appendChild(document.createTextNode(data.desc.name));
 
+    ppt.setAttribute('class','log_ppt ' + data.curr.owner.toLowerCase());
+    ppt.appendChild(document.createTextNode(data.desc.points_tick + '/' + data.desc.points_capture));
+
     guild.setAttribute('class','log_guild');
     if (data.curr.guild) {
       var abbr = document.createElement('abbr');
-      abbr.setAttribute('title',data.curr.guild.guild_name);
+      abbr.setAttribute('title',data.curr.guild.name);
       abbr.appendChild(document.createTextNode('['+data.curr.guild.tag+']'));
       guild.appendChild(abbr);
     } else if (data.prev.guild) {
+      var abbr = document.createElement('abbr');
+      abbr.setAttribute('title',data.prev.guild.name);
+      abbr.appendChild(document.createTextNode('['+data.prev.guild.tag+']'));
       guild.setAttribute('class','log_guild released');
-      guild.appendChild(document.createTextNode('['+data.prev.guild.tag+']'));
+      guild.appendChild(abbr);
     } else {
       guild.innerHTML="&nbsp;";
     }
@@ -80,6 +90,7 @@ function WvWLogger(id,colors) {
     item.appendChild(from);
     item.appendChild(icon);
     item.appendChild(objective);
+    item.appendChild(ppt);
     item.appendChild(guild);
     item.appendChild(message);
 
