@@ -629,6 +629,9 @@ function WvWGuilds() {
       requests.push({'guid': guid, 'method': method });
     }
   };
+  this.stop = function() {
+    window.clearInterval(guild_interval);
+  }
 }
 class WvWMap {
   constructor(which) {
@@ -648,27 +651,27 @@ class WvWMap {
       this.objectives = new Map([['Camp', []],['Tower', []],['Keep', []],['Castle', []],['Ruins', []]]);
       //console.log(newStatus);
       newStatus['objectives'].forEach(function(e,i,l) {
-	if (e.type === "Camp") {
-	    this.objectives.get('Camp').push(
-	      new Camp(this.canvas,newStatus['features']['Camp'].length,e)
-	    );
-	} else if (e.type === "Tower") {
-	    this.objectives.get('Tower').push(
-	      new Tower(this.canvas,newStatus['features']['Tower'].length,e)
-	    );
-	} else if (e.type === "Keep" && ! (e.id.endsWith('-113') || e.id.endsWith('-37'))) {
-	    this.objectives.get('Keep').push(
-	      new Keep(this.canvas,newStatus['features']['Keep'].length,e)
-	    );
-	} else if (e.type === "Castle" || (e.type === "Keep" && (e.id.endsWith('-113') || e.id.endsWith('-37')))) {
-	    this.objectives.get('Castle').push(
-	      new Castle(this.canvas,newStatus['features']['Castle'].length,e)
-	    );
-	} else if (e.type === "Ruins") {
-	    this.objectives.get('Ruins').push(
-	      new Ruins(this.canvas,newStatus['features']['Ruins'].length,e)
-	    );
-	}
+        if (e.type === "Camp") {
+            this.objectives.get('Camp').push(
+              new Camp(this.canvas,newStatus['features']['Camp'].length,e)
+            );
+        } else if (e.type === "Tower") {
+            this.objectives.get('Tower').push(
+              new Tower(this.canvas,newStatus['features']['Tower'].length,e)
+            );
+        } else if (e.type === "Keep" && ! (e.id.endsWith('-113') || e.id.endsWith('-37'))) {
+            this.objectives.get('Keep').push(
+              new Keep(this.canvas,newStatus['features']['Keep'].length,e)
+            );
+        } else if (e.type === "Castle" || (e.type === "Keep" && (e.id.endsWith('-113') || e.id.endsWith('-37')))) {
+            this.objectives.get('Castle').push(
+              new Castle(this.canvas,newStatus['features']['Castle'].length,e)
+            );
+        } else if (e.type === "Ruins") {
+            this.objectives.get('Ruins').push(
+              new Ruins(this.canvas,newStatus['features']['Ruins'].length,e)
+            );
+        }
       },this);
     }
     this.status = newStatus;
@@ -678,8 +681,8 @@ class WvWMap {
     this.canvas.drawBackground(this.name);
     ['Camp','Tower','Keep','Ruins','Castle'].forEach(function(type) {
       this.objectives.get(type).forEach(function(objective) {
-	var tgt = this.status.objectives.find(function(obj) { return obj.id == objective.id() });
-	objective.update(tgt,this.logger);
+        var tgt = this.status.objectives.find(function(obj) { return obj.id == objective.id() });
+        objective.update(tgt,this.logger);
       },this);
     },this);
   }
@@ -748,11 +751,13 @@ class WorldStatus {
     this.statdiv.html("Match completed, status updates halted.  Reload to monitor current match");
     clearInterval(this.interval_id);
     this.interval_id = null;
+    guilds.stop();
   }
   lookupGuilds(newStatus) {
     newStatus.maps.forEach(function(element,i,l) {
       element.objectives.forEach(function(objective,j,m) {
 	if (objective.claimed_by != null) {
+          guilds.find(objective.claimed_by);
 	}
       },this);
     },this);
@@ -954,6 +959,12 @@ class World {
 
 $.when(
   $.getJSON( "world_names_en.json", function(data) {
+    $('#world').find('option').remove();
+    var world_select = '';
+    $.each(data,function(key,value) {
+      world_select += '<option value="' + value.id + '">' + value.name + '</option>'
+    })
+    $('select#world').append(world_select);
     ws.worlds = data;
     var found = data.find(function(elem) { return elem.name === 'Crystal Desert' })
     ws.worldId(found.id);
