@@ -574,12 +574,24 @@ function Ruins(myc,count,desc) {
   }
 }
 function WvWGuilds() {
-  var url         = 'https://api.guildwars2.com/v1/guild_details.json?guild_id=';
+  var url         = 'https://api.guildwars2.com/v2/guild/';
   var xmlhttp     = new XMLHttpRequest();
-  var registrar  = {};
+  var registrar   = {};
+  var requests    = [];
+  var fetch_delay = 260; // ms
 
   // Instantiate Guild List, via HTML5 LocalStorage, if available
   load();
+
+  var guild_interval = window.setInterval(function() {
+    guild = requests.shift();
+    while (guild && registrar.hasOwnProperty(guild.guid)) {
+      guild = requests.shift();
+    }
+    if (guild) {
+      fetch(guild.guid,guild.method);
+    }
+  },fetch_delay);
 
   function save() {
     localStorage.setItem('guild_registrar',JSON.stringify(registrar));
@@ -602,6 +614,8 @@ function WvWGuilds() {
         method(guild);
         // console.log('fetched guild');
         // console.log(guild);
+      } else {
+        requests.push({'guid': guid, 'method': method });
       }
     }
 
@@ -612,7 +626,7 @@ function WvWGuilds() {
     if (registrar.hasOwnProperty(guid)) {
       method(registrar[guid]);
     } else {
-      fetch(guid,method);
+      requests.push({'guid': guid, 'method': method });
     }
   };
 }
