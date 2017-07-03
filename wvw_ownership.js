@@ -734,6 +734,7 @@ class WorldStatus {
     clearInterval(this.interval_id);
     this.interval_id = null;
     guilds.stop();
+    $('#timer').pietimer('reset');
   }
   lookupGuilds(newStatus) {
     newStatus.maps.forEach(function(element,i,l) {
@@ -922,10 +923,10 @@ function updateStatus() {
                 // alert("yahoo, timer is done!");
                 $('#timer').pietimer('reset');
                 $this.find('.percent').html(0);
-                $('#timer').pietimer('start');
             }
         });
     });
+    $('#timer').pietimer('start');
     $.get(ws.status_url,function(data) {
       // console.log(data);
       var sanitized = sanitizeData(data,ws.mapObjectives);

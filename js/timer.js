@@ -59,7 +59,8 @@
           'transform':'rotate('+deg+'deg)'
         });
          var secs = (data.timerSeconds)*((100-percent)/100);/*NEW*/
-    $this.find('.percent').html(Math.round(secs)+'');/*Changed*/
+    //$this.find('.percent').html(Math.ceil(secs)+'');/*Changed*/
+    $this.find('.percent').html(secs.toFixed(1)+'');/*Changed*/
     if (data.showPercentage) {
       $this.find('.percent').show();
     }
