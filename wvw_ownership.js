@@ -95,24 +95,32 @@ function MyCanvas(id,grid) {
 }
 class Objective {
   constructor(details) {
-    this.claimed_at   = details.claimed_at;
-    this.guild	      = details.guild;
-    this.id	      = details.id;
-    this.coord	      = details.coord;
-    this.index	      = details.index;
-    this.label_coord  = details.label_coord;
-    this.last_flipped = details.last_flipped;
-    this.map_id	      = details.map_id;
-    this.name	      = details.name;
-    this.obj_id	      = details.obj_id;
-    this.owner	      = details.owner;
-    this.sector_id    = details.sector_id;
-    this.type	      = details.type;
+    this.claimed_at     = details.claimed_at;
+    this.id	        = details.id;
+    this.chat_link      = details.chat_link;
+    this.coord	        = details.coord;
+    this.guild	        = details.guild;
+    this.upgrades       = details.guild_upgrades;
+    this.index	        = details.index;
+    this.label_coord    = details.label_coord;
+    this.last_flipped   = details.last_flipped;
+    this.map_id	        = details.map_id;
+    this.map_type       = details.map_type;
+    this.marker         = details.marker;
+    this.name	        = details.name;
+    this.obj_id	        = details.obj_id;
+    this.owner	        = details.owner;
+    this.points_capture = details.points_capture;
+    this.points_tick    = details.points_tick;
+    this.sector_id      = details.sector_id;
+    this.type	        = details.type;
+    this.yaks	        = details.yaks_delivered;
+    this.claimed_at     = details.claimed_at;
+    this.ri_duration    = 300*1000;
   }
   ri() {
-    var now	  = Date.now();
-    var duration  = 300*1000;
-    return (this.last_flipped+duration - now);
+    var ri = (status.last_flipped+this.ri_duration-Date.now());
+    return ri / 1000;
   }
   update() {
   }
@@ -122,8 +130,8 @@ function Castle(myc,count,desc) {
   var size          = 27;
   var canvas        = myc;
   var status        = desc;
+  var ri_duration   = 300*1000;
 
-  var captured_at   = 0;
   this.id           = function() { return status.id }
   var objective	    = new Objective(desc);
   //console.log(objective);
@@ -168,18 +176,15 @@ function Castle(myc,count,desc) {
     }
   }
   function righteous_indignation() {
-    var now       = Date.now()/1000;
-    var duration  = 300;
-
-    if ((captured_at+duration) > now) {
-      return captured_at+duration - now;
+    var ri = (status.last_flipped+ri_duration-Date.now());
+    if (ri > 0) {
+      return ri / 1000;
     }
     return 0;
   }
   this.report = function() { console.log(status.id+": "+status.type+"/"+status.name); }
   this.update = function(st,logger) {
-    logger.log({'desc': st, 'prev': status, 'curr': st});
-    //this.captured_at = st.last_flipped / 1000;
+    logger.log({'prev': status, 'curr': st});
     status = st;
 
     if (status.owner == "Red") {
@@ -200,8 +205,7 @@ function Keep(myc,count,desc) {
   var sites         = count * 1.0;
   var status        = desc;
   var updated	    = 0;
-
-  var captured_at   = 0;
+  var ri_duration   = 300*1000;
 
   this.id	    = function() { return status.id; }
 
@@ -229,7 +233,6 @@ function Keep(myc,count,desc) {
   function draw(stroke,fill) {
     var ctx         = canvas.context;
     var ri          = righteous_indignation();
-    ctx.strokeStyle = stroke;
     ctx.fillStyle   = fill;
 
     ctx.beginPath();
@@ -238,30 +241,29 @@ function Keep(myc,count,desc) {
     ctx.arc(canvas.cx,canvas.cy,size,angle1(),angle2(),false);
     ctx.lineTo(canvas.cx,canvas.cy);
     ctx.fill();
-    ctx.stroke();
 
     ctx.strokeStyle = canvas.colors.yellow();
     ctx.fillStyle   = canvas.colors.yellow();
     switch (true) {
       case ri > 180:
         ctx.beginPath();
-        ctx.moveTo(canvas.cx+Math.cos(angle1())*(size-24), canvas.cy+Math.sin(angle1())*(size-24));
-        ctx.lineTo(canvas.cx+Math.cos(angle2())*(size-24), canvas.cy+Math.sin(angle2())*(size-24));
+        ctx.moveTo(canvas.cx+Math.cos(angle1())*(size-14), canvas.cy+Math.sin(angle1())*(size-14));
+	ctx.arc(canvas.cx,canvas.cy,size-14,angle1(),angle2(),false);
         ctx.stroke();
       case ri > 120:
         ctx.beginPath();
-        ctx.moveTo(canvas.cx+Math.cos(angle1())*(size-18), canvas.cy+Math.sin(angle1())*(size-18));
-        ctx.lineTo(canvas.cx+Math.cos(angle2())*(size-18), canvas.cy+Math.sin(angle2())*(size-18));
+        ctx.moveTo(canvas.cx+Math.cos(angle1())*(size-11), canvas.cy+Math.sin(angle1())*(size-11));
+	ctx.arc(canvas.cx,canvas.cy,size-11,angle1(),angle2(),false);
         ctx.stroke();
       case ri > 60:
         ctx.beginPath();
-        ctx.moveTo(canvas.cx+Math.cos(angle1())*(size-12), canvas.cy+Math.sin(angle1())*(size-12));
-        ctx.lineTo(canvas.cx+Math.cos(angle2())*(size-12), canvas.cy+Math.sin(angle2())*(size-12));
+        ctx.moveTo(canvas.cx+Math.cos(angle1())*(size-8), canvas.cy+Math.sin(angle1())*(size-8));
+	ctx.arc(canvas.cx,canvas.cy,size-8,angle1(),angle2(),false);
         ctx.stroke();
       case ri > 30:
         ctx.beginPath();
-        ctx.moveTo(canvas.cx+Math.cos(angle1())*(size-7), canvas.cy+Math.sin(angle1())*(size-7));
-        ctx.lineTo(canvas.cx+Math.cos(angle2())*(size-7), canvas.cy+Math.sin(angle2())*(size-7));
+        ctx.moveTo(canvas.cx+Math.cos(angle1())*(size-5), canvas.cy+Math.sin(angle1())*(size-5));
+	ctx.arc(canvas.cx,canvas.cy,size-5,angle1(),angle2(),false);
         ctx.stroke();
       case ri > 0:
 	ctx.beginPath();
@@ -269,29 +271,28 @@ function Keep(myc,count,desc) {
 	ctx.lineTo(canvas.cx+Math.cos(angle1())*size, canvas.cy+Math.sin(angle1())*size);
 	ctx.arc(canvas.cx,canvas.cy,size,angle1(),angle2(),false);
 	ctx.lineTo(canvas.cx+Math.cos(angle2())*(size-2), canvas.cy+Math.sin(angle2())*(size-2));
-	ctx.lineTo(canvas.cx+Math.cos(angle1())*(size-2), canvas.cy+Math.sin(angle1())*(size-2));
+	ctx.arc(canvas.cx,canvas.cy,size-2,angle2(),angle1(),true);
 	ctx.fill();
 	ctx.stroke();
     }
+    ctx.strokeStyle = stroke;
+    ctx.beginPath();
+    ctx.moveTo(canvas.cx,canvas.cy);
+    ctx.lineTo(canvas.cx+Math.cos(angle1())*size, canvas.cy+Math.sin(angle1())*size);
+    ctx.arc(canvas.cx,canvas.cy,size,angle1(),angle2(),false);
+    ctx.lineTo(canvas.cx,canvas.cy);
+    ctx.stroke();
   }
   function righteous_indignation() {
-    var now       = Date.now()/1000;
-    var duration  = 300;
-
-    if ((captured_at+duration) > now) {
-      return captured_at+duration - now;
+    var ri = (status.last_flipped+ri_duration-Date.now());
+    if (ri > 0) {
+      return ri / 1000;
     }
     return 0;
   }
   this.report = function() { console.log(status.id+": "+status.type+"/"+status.name); }
   this.update = function(st,logger) {
-    logger.log({'desc': st, 'prev': status, 'curr': st});
-    this.captured_at = st.last_flipped / 1000;
-    if (st.claimed_by != null && st.claimed_at != null && st.claimed_at > updated) {
-      if (st.guild) {
-        logger.log({'guild': st.guild, 'message':st.type.toLowerCase() + ' ' + st.name});
-      }
-    }
+    logger.log({'prev': status, 'curr': st});
     status = st;
 
     if (status.owner == "Red") {
@@ -313,8 +314,8 @@ function Tower(myc,count,desc) {
   var sites         = count * 1.0;
   var status        = desc;
   var updated	    = 0;
+  var ri_duration   = 300*1000;
 
-  var captured_at   = 0;
   this.id           = desc.id;
 
   this.id     = function() { return status.id; };
@@ -384,23 +385,15 @@ function Tower(myc,count,desc) {
     }
   }
   function righteous_indignation() {
-    var now       = Date.now()/1000;
-    var duration  = 300;
-
-    if ((captured_at+duration) > now) {
-      return captured_at+duration - now;
+    var ri = (status.last_flipped+ri_duration-Date.now());
+    if (ri > 0) {
+      return ri / 1000;
     }
     return 0;
   }
   this.report = function() { console.log(status.id+": "+status.type+"/"+status.name); }
   this.update = function(st,logger) {
-    logger.log({'desc': st, 'prev': status, 'curr': st});
-    captured_at = (st.last_flipped / 1000);
-    if (st.claimed_by != null && st.claimed_at != null && st.claimed_at > updated) {
-      if (st.guild) {
-        logger.log({'guild': st.guild, 'message':st.type.toLowerCase() + ' ' + st.name});
-      }
-    }
+    logger.log({'prev': status, 'curr': st});
     status = st;
 
     if (status.owner == "Red") {
@@ -422,8 +415,8 @@ function Camp(myc,count,desc) {
   var sites	    = count * 1.0;
 
   var status        = desc;
-  var captured_at   = 0;
   var updated	    = 0;
+  var ri_duration   = 300*1000;
 
   function report() { console.log(status.id+": "+status.type+"("+count+")/"+status.name+"["+status.index+"] "+angle()); }
   this.report = function() { report(); };
@@ -492,22 +485,14 @@ function Camp(myc,count,desc) {
     }
   }
   function righteous_indignation() {
-    var now       = Date.now()/1000;
-    var duration  = 300;
-
-    if ((captured_at+duration) > now) {
-      return captured_at+duration - now;
+    var ri = (status.last_flipped+ri_duration-Date.now());
+    if (ri > 0) {
+      return ri / 1000;
     }
     return 0;
   }
   this.update = function(st,logger) {
-    logger.log({'desc': st, 'prev': status, 'curr': st});
-    captured_at = st.last_flipped / 1000;
-    if (st.claimed_by != null && st.claimed_at != null && st.claimed_at > updated) {
-      if (st.guild) {
-        logger.log({'guild': st.guild, 'message':st.type.toLowerCase() + ' ' + st.name});
-      }
-    }
+    logger.log({'prev': status, 'curr': st});
     status = st;
 
     if (status.owner == "Red") {
@@ -531,7 +516,6 @@ function Ruins(myc,count,desc) {
   var canvas        = myc;
   var status        = desc;
 
-  this.captured_at  = null;
   this.id	    = function() { return status.id; };
   this.report	    = function() { report(); };
 
@@ -558,9 +542,6 @@ function Ruins(myc,count,desc) {
     ctx.stroke();
   }
   this.update = function(st) {
-    if (status && (status.owner != st.owner)) {
-      this.captured_at = Date.now();
-    }
     status = st;
 
     if (status.owner == "Red") {

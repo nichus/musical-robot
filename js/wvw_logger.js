@@ -107,14 +107,14 @@ function WvWLogger(id,colors) {
     
     icon.setAttribute('class','log_icon ' + data.curr.owner.toLowerCase());
     icon.appendChild(document.createElement('img'));
-    icon.firstChild.setAttribute('src',iconmap[data.desc.type]);
-    //icon.firstChild.setAttribute('src',data.desc.marker);
+    icon.firstChild.setAttribute('src',iconmap[data.curr.type]);
+    //icon.firstChild.setAttribute('src',data.curr.marker);
 
     objective.setAttribute('class','log_objective ' + data.curr.owner.toLowerCase());
-    objective.appendChild(document.createTextNode(data.desc.name));
+    objective.appendChild(document.createTextNode(data.curr.name));
 
     ppt.setAttribute('class','log_ppt ' + data.curr.owner.toLowerCase());
-    ppt.appendChild(document.createTextNode(data.desc.points_tick + '/' + data.desc.points_capture));
+    ppt.appendChild(document.createTextNode(data.curr.points_tick + '/' + data.curr.points_capture));
 
     guild.setAttribute('class','log_guild');
     if (data.curr.guild) {
