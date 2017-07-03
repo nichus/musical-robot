@@ -8,8 +8,58 @@ function WvWLogger(id,colors) {
                             'Castle': 'img/white_castle.png'
                           };
 
-  function formatTime(now) {
-    return "" + now.getUTCHours() + ":" + now.getUTCMinutes() + ":" + now.getUTCSeconds();
+  function formatEntry2(changes) {
+    var template = _.template('<div class="event <%= captured_by %>"><table><tr class="line1"><td class="box" title="Points Per Tick"><div><%= ppt %></div></td><td class="box <%= captured_from %>"><div><img src="<%= action_img %>" height="16" width="16" title="<%= action_title %>"/></div></td><td><div><img height="18" width="18" src="<%= objective_img %>" title="<%= objective_title %>" /></div></td><td style="width: 100%;" title="Objective Name" class="objective_name"><%- objective_name %><img src="img/copy-link.svg" width="16" height="16" title="copy event"/></td><td class="box" align="right"><abbr class="log_guild <%= guild_release %>" title="<%- guild_name %>"><%= guild_abbr %></td></tr><!-- tr class="line2"><td colspan="5" title="Upgrades"><%= upgrades %></td></tr --></table></div>');
+     
+    // console.log(changes);
+    var ec = template(changes);
+    $("#logContainer2 div.update").append(ec);
+  }
+
+  function determineChanges(data) {
+    var changed = { changed: false };
+
+    if (data.prev == null) {
+      return changed;
+    }
+    if ((data.prev.claimed_by == data.curr.claimed_by) && (data.prev.owner == data.curr.owner)) {
+      return changed;
+    }
+    if (data.prev.owner != data.curr.owner) {
+      changed.action_img  = 'img/captured.svg';
+      changed.action_title = "captured";
+    } else if (data.curr.guild) {
+      changed.action_img  = 'img/guild_claim.png';
+      changed.action_title = "claimed";
+    } else if (data.prev.guild) {
+      changed.action_img  = 'img/guild_release.png';
+      changed.action_title = "released";
+    } else {
+      changed.action_img  = 'img/none.svg';
+      changed.action_title = "";
+    }
+    
+    changed.changed       = true;
+    changed.captured_by   = data.curr.owner.toLowerCase();
+    changed.captured_from = data.prev.owner.toLowerCase();
+    changed.objective_img = data.curr.marker;
+    changed.objective_title = data.curr.type;
+    changed.objective_name = data.curr.name;
+    changed.ppt           = data.curr.points_tick;
+    changed.guild_release = "";
+    if (data.curr.guild) {
+      changed.guild_name  =  data.curr.guild.name;
+      changed.guild_abbr  =  data.curr.guild.tag;
+    } else if (data.prev.guild) {
+      changed.guild_name  =  data.prev.guild.name;
+      changed.guild_abbr  =  data.prev.guild.tag;
+      changed.guild_release = "released";
+    } else {
+      changed.guild_name = "";
+      changed.guild_abbr = "";
+    }
+    changed.upgrades = "";
+    return changed;
   }
   function formatEntry(data) {
     //console.log(data);
@@ -24,6 +74,12 @@ function WvWLogger(id,colors) {
     var yak             = document.createElement('div');
     var upgrades        = document.createElement('div');
 
+    /*
+    if (!window.spammed) {
+      console.log(data);
+      window.spammed = true;
+    }
+    */
     if (data.prev == null) {
       return null;
     }
@@ -108,6 +164,11 @@ function WvWLogger(id,colors) {
         box.removeChild(box.lastChild);
       }
       box.insertBefore(entry,box.firstChild);
+    }
+    var changes = determineChanges(data);
+    if (changes.changed) {
+      formatEntry2(changes);
+      console.log(data);
     }
 
     /*

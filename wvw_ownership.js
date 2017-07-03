@@ -194,9 +194,9 @@ function Castle(myc,count,desc) {
   }
 }
 function Keep(myc,count,desc) {
-  var size          = 55;
+  var size          = 45;
   var canvas        = myc;
-  var width         = (count==2) ? Math.PI/4.0 : Math.PI/6.0;
+  var width         = Math.PI/3.0;
   var sites         = count * 1.0;
   var status        = desc;
   var updated	    = 0;
@@ -207,6 +207,7 @@ function Keep(myc,count,desc) {
 
   if (status.map_type != "Center") {
     sites = sites - 1;
+    width = Math.PI/2.0; 
   }
 
   function rotation() {
@@ -648,11 +649,11 @@ class WvWMap {
     var canvas      = this.canvas;
     this.status     = newStatus;
 
-    console.log(newStatus);
     if (newMap) {
       // console.log(this.name+ " new Map detected");
       this.logger.reset();
       this.objectives = new Map([['Camp', []],['Tower', []],['Keep', []],['Castle', []],['Ruins', []]]);
+      var graph = this.graph;
       var objectives  = this.objectives;
       Promise.all([ newStatus['features']['Camp'], newStatus['features']['Tower'], newStatus['features']['Keep'], newStatus['features']['Castle'], newStatus['features']['Ruins'] ]).then(values => {
         newStatus['objectives'].forEach(function(e,i,l) {
@@ -821,7 +822,7 @@ function sanitizeObjective(objective,o) {
   });
 
   o.id(objective['id']).then(function(details) {
-    ['coord','index','label_coord','name','sector_id','chat_link','marker'].forEach(function(key) {
+    ['chat_link','coord','index','label_coord','map_type','marker','name','sector_id'].forEach(function(key) {
       objective[key] = details[key];
     });
   });
@@ -930,6 +931,20 @@ function sanitizeData(data,mapObjectives) {
 
 function updateStatus() {
   if (ws.running) {
+    $(function() {
+        $('#timer').pietimer({
+            timerSeconds: 20,
+            color: '#ccc',
+            fill: '#ccc',
+            showPercentage: true,
+            callback: function() {
+                // alert("yahoo, timer is done!");
+                $('#timer').pietimer('reset');
+                $this.find('.percent').html(0);
+                $('#timer').pietimer('start');
+            }
+        });
+    });
     $.get(ws.status_url,function(data) {
       // console.log(data);
       var sanitized = sanitizeData(data,ws.mapObjectives);
