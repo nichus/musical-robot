@@ -756,16 +756,15 @@ class WorldStatus {
     if (newStatus.start_time >= this.end_time) {
       this.match_id = newStatus.id;
       newMap = true;
-
-      // console.log(newStatus);
-      ["red","green","blue"].forEach(function(color) {
-        var kills = newStatus.kills.get(color);
-        var deaths = newStatus.deaths.get(color);
-        var kdr    = ((kills*100.0)/deaths).toFixed(1);
-        // console.log(color, kills, deaths, kdr);
-	displayTeam(color,newStatus.teams.get(color),newStatus.scores.get(color),newStatus.victory_points.get(color),kdr);
-      });
     }
+    //console.log(newStatus);
+    ["red","green","blue"].forEach(function(color) {
+      var kills = newStatus.kills.get(color);
+      var deaths = newStatus.deaths.get(color);
+      var kdr    = ((kills*100.0)/deaths).toFixed(1);
+      // console.log(color, kills, deaths, kdr);
+      displayTeam(color,newStatus.teams.get(color),newStatus.scores.get(color),newStatus.victory_points.get(color),kdr);
+    });
     this.end_time = newStatus.end_time;
     this.status	  = newStatus;
     newStatus.maps.forEach(function(map,index,rawMaps) {
