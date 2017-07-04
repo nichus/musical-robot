@@ -623,7 +623,7 @@ class WvWMap {
     this.info	    = null;
     this.graph	    = which.replace("Center","CenterHome");
     this.canvas	    = new MyCanvas(this.graph,false);
-    this.logger	    = new WvWLogger(this.graph.replace('Home','Log'),this.canvas.colors);
+    this.logger     = new WvWLogger(this.graph.replace('Home','Log'));
     this.infoURL    = 'https://api.guildwars2.com/v2/maps/';
   }
   updateStatus(newStatus,newMap=false,info) {
@@ -659,6 +659,8 @@ class WvWMap {
     var objectives  = this.objectives;
     var status      = this.status;
     var logger      = this.logger;
+    logger.nextUpdate();
+
     Promise.all([ status['features']['Camp'], status['features']['Tower'], status['features']['Keep'], status['features']['Ruins'], status['features']['Castle'] ]).then(values => {
       ['Camp','Tower','Keep','Ruins','Castle'].forEach(function(type) {
         objectives.get(type).forEach(function(objective) {
@@ -666,6 +668,7 @@ class WvWMap {
           objective.update(tgt,logger);
         });
       },this);
+      logger.publish();
     });
   }
 }
@@ -754,8 +757,13 @@ class WorldStatus {
       this.match_id = newStatus.id;
       newMap = true;
 
+      console.log(newStatus);
       ["red","green","blue"].forEach(function(color) {
-	displayTeam(color,newStatus.teams.get(color),newStatus.scores.get(color),newStatus.kills.get(color),newStatus.deaths.get(color));
+        var kills = newStatus.kills.get(color);
+        var deaths = newStatus.deaths.get(color);
+        var kdr    = ((kills*100.0)/deaths).toFixed(1);
+        console.log(color, kills, deaths, kdr);
+	displayTeam(color,newStatus.teams.get(color),newStatus.scores.get(color),newStatus.victory_points.get(color),kdr);
       });
     }
     this.end_time = newStatus.end_time;
@@ -771,13 +779,13 @@ class WorldStatus {
 var ws	    = new WorldStatus('MatchStatus');
 var guilds  = new WvWGuilds();
 
-function displayTeam(color,team,score,kills,deaths) {
+function displayTeam(color,team,score,ppt,kdr) {
   var content = "<div class='captain'>"+team[0].name+"</div>";
   content += "<div class='members'> w/ "+team.slice(1).map(function(e){ return e.name; }).join(' &amp; ')+"</div>";
   content += "<div class='stats'>";
   content += "<div class='score'> s: "+score.toLocaleString()+" </div>";
-  content += "<div class='kills'> k: "+kills.toLocaleString()+" </div>";
-  content += "<div class='deaths'> d: "+deaths.toLocaleString()+" </div>";
+  content += "<div class='kills'> ppt: "+ppt.toLocaleString()+" </div>";
+  content += "<div class='deaths'> k/d: "+kdr+"% </div>";
   $("#"+color+".team").html(content);
 }
 function sanitizeObjective(objective,o) {
@@ -855,7 +863,7 @@ function sanitizeTeam(color, primaryId, all_worlds) {
 function sanitizeData(data,mapObjectives) {
   var sanitized	  = {};
   var teams	  = ['red','green','blue'];
-  ['id','start_time','end_time','scores','worlds','all_worlds','kills','deaths','maps'].forEach(function(key) {
+  ['id','start_time','end_time','scores','worlds','all_worlds','kills','deaths','victory_points','maps'].forEach(function(key) {
     switch (key) {
       case 'id':
 	sanitized[key] = data[key];
@@ -876,6 +884,7 @@ function sanitizeData(data,mapObjectives) {
 //	sanitized[key] = new Map();
 //	teams.forEach(function(color) { sanitized[key].set(color, mapWorld(data[key][color])); });
 	break;
+      case 'victory_points':
       case 'scores':
       case 'kills':
       case 'deaths':
@@ -928,7 +937,7 @@ function updateStatus() {
     });
     $('#timer').pietimer('start');
     $.get(ws.status_url,function(data) {
-      // console.log(data);
+      console.log(data);
       var sanitized = sanitizeData(data,ws.mapObjectives);
       // console.log(sanitized);
       ws.updateWorld(sanitized);

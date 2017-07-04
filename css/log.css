@@ -1,11 +1,14 @@
 #logContainer {
+  /*
   font: 10px/14px Verdana,Sans-Serif;
+  */
   margin-left: 200px;
 }
 #logContainer > div {
   height: 194px;
   overflow-y: auto;
-  width: 400px;
+  overflow-x: hidden;
+  width: 500px;
 }
 
 .centerhome { outline: 1px solid gainsboro; }
@@ -44,7 +47,7 @@
   height: 20px;
   color: white;
 }
-#logContainer .log_guild {
+/*#logContainer .log_guild {
   position: absolute;
   top: 0px;
   left: 240px;
@@ -52,6 +55,7 @@
   height: 20px;
   text-align: center;
 }
+*/
 #logContainer .log_ppt {
   position: absolute;
   top: 0px;
@@ -79,27 +83,12 @@
   width: 200px;
   height: 20px;
 }
-#logContainer .red { background-color: #df0101; }
-#logContainer .green { background-color: #088a08; }
-#logContainer .blue { background-color: #2e64fe; }
-#logContainer .white { background-color: #fafafa; }
-
-#logContainer2 {
-  position: absolute;
-  top: 200px;
-  left: 700px;
-  width: 400px;
-  height: 400px;
-  outline: 1px solid black;
-  background: #eeeeee;
-}
 
 .ppt_shift {
   height: 1.5em;
 }
 .update {
   background: url(../img/update_banner_12.png) no-repeat;
-  height: 100%;
 }
 .update h1 {
   font-size: 14pt;
@@ -121,8 +110,32 @@
   text-align: center;
   font-size: 10pt;
 }
+.update h1 div.changes div.redshift { background: #df0101; }
+.update h1 div.changes div.blushift { background: #2e64fe; }
+.update h1 div.changes div.grnshift { background: #088a08; }
 .event {
   color: white;
+  display: flex;
+  width: 500px;
+}
+.event .box {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  text-align: center;
+  margin: auto;
+}
+.event .box.guild {
+  width: 48px;
+}
+.event .objective_name {
+  flex: 1;
+  min-width: 350px;
+}
+.event .objective_name img {
+  float: right;
+  margin-top: 5px;
+  margin-right: 0.25em;
 }
 div.event.red   {
   /*border: 1px solid #df0101; */
@@ -150,17 +163,17 @@ div.event.green {
   text-align: center;
   margin: auto;
 }
-.event table td.box abbr {
+.event .box.guild abbr {
   width: 48px;
   height: 24px;
   text-align: right;
   margin: auto;
   display: inline-block;
 }
-.event table td.box img { margin: 4px; }
-.event table td.box.red   { background-color: #df0101; }
-.event table td.box.blue  { background-color: #2e64fe; }
-.event table td.box.green { background-color: #088a08; }
+.event .box img { margin: 4px 0px 4px 0px; }
+.event .box.red   { background-color: #df0101; }
+.event .box.blue  { background-color: #2e64fe; }
+.event .box.green { background-color: #088a08; }
 
 .event table td.box img {
   vertical-align: middle;

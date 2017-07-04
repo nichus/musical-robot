@@ -2,6 +2,11 @@ body {
   font-family: "Open Sans Condensed",sans-serif;
   font-size: 14pt;
 }
+.content {
+  position: relative;
+  max-width: 700px;
+  margin: auto;
+}
 #teams {
   height: 35px;
 }
@@ -22,17 +27,17 @@ body {
   width: 120px;
   height: 50px;
   position: absolute;
-  top: 5px;
+  top: 0px;
   padding: 3px; 
 }
-#red.team { right: 268px; background: #df0101; }
-#green.team { right: 138px; background: #088a08; }
-#blue.team { right: 8px; background: #2e64fe; }
+#red.team { right: 260px; background: #df0101; }
+#green.team { right: 130px; background: #088a08; }
+#blue.team { right: 0px; background: #2e64fe; }
 #MatchStatus { font-size: 10pt; }
 #ri {
   position:absolute;
-  left: 8px;
-  top: 816px;
+  left: 0px;
+  top: 806px;
 }
 div.style-standard {
   font-size: 16pt;
