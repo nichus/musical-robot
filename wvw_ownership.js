@@ -757,12 +757,12 @@ class WorldStatus {
       this.match_id = newStatus.id;
       newMap = true;
 
-      console.log(newStatus);
+      // console.log(newStatus);
       ["red","green","blue"].forEach(function(color) {
         var kills = newStatus.kills.get(color);
         var deaths = newStatus.deaths.get(color);
         var kdr    = ((kills*100.0)/deaths).toFixed(1);
-        console.log(color, kills, deaths, kdr);
+        // console.log(color, kills, deaths, kdr);
 	displayTeam(color,newStatus.teams.get(color),newStatus.scores.get(color),newStatus.victory_points.get(color),kdr);
       });
     }
@@ -937,7 +937,7 @@ function updateStatus() {
     });
     $('#timer').pietimer('start');
     $.get(ws.status_url,function(data) {
-      console.log(data);
+      // console.log(data);
       var sanitized = sanitizeData(data,ws.mapObjectives);
       // console.log(sanitized);
       ws.updateWorld(sanitized);
